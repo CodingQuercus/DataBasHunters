@@ -12,7 +12,6 @@ public class User
 
     public string? Profilepicture { get; set; }
 
-    public int? Transaction { get; set; }
 
 }
 
