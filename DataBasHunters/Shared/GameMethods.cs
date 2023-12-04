@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data.Common;
 using Microsoft.Data.SqlClient;
 
 namespace DataBasHunters.Shared
@@ -50,5 +51,47 @@ namespace DataBasHunters.Shared
 
             return games;
         }
+
+
+        public int CreateGame(Cointoss ct, out string errormsg)
+        {
+            errormsg = ""; // Initialize with a default value
+            SqlConnection dbConnection = new SqlConnection();
+            dbConnection.ConnectionString = @"Server=tcp:basehunters.database.windows.net,1433;Initial Catalog=databasprojekt;Persist Security Info=False;User ID=hunters;Password=COOLkille15;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
+            string sqlstring = "INSERT INTO [Cointoss] (Date, Sum, Heads) VALUES (@Date, @Sum, @Heads)";
+            SqlCommand dbCommand = new SqlCommand(sqlstring, dbConnection);
+            dbCommand.Parameters.Add("@Date", System.Data.SqlDbType.DateTime).Value = ct.Date;
+            dbCommand.Parameters.Add("@Sum", System.Data.SqlDbType.Int).Value = ct.Sum;
+            dbCommand.Parameters.Add("@Heads", System.Data.SqlDbType.Bit).Value = ct.Heads;
+
+
+            try
+            {
+                dbConnection.Open();
+                int i = 0;
+                i = dbCommand.ExecuteNonQuery();
+
+                if (i == 1)
+                {
+                    errormsg = "";
+                }
+                else
+                {
+                    errormsg = "De gåå int";
+                    return 0;
+                }
+                return i;
+            }
+            catch (Exception e)
+            {
+                errormsg = e.Message;
+                return 0;
+            }
+            finally
+            {
+                dbConnection.Close();
+            }
+        }
+
     }
 }
