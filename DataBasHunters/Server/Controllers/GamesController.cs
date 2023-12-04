@@ -26,6 +26,7 @@ namespace DataBasHunters.Server.Controllers
 
             return Ok(games);
         }
+
         [HttpPost]
         public IActionResult CreateGame(Cointoss ct)
         {
@@ -36,7 +37,7 @@ namespace DataBasHunters.Server.Controllers
             ViewBag.error = error;
             ViewBag.antal = i;
 
-            return Ok();
+            return Ok(new { error, antal = i });
         }
     }
 }
