@@ -50,4 +50,5 @@ namespace DataBasHunters.Shared
             return userList;
         }
     }
+
 }
