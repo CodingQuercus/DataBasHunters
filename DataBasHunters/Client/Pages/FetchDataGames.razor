@@ -1,0 +1,56 @@
+﻿@page "/fetchdatagames"
+@using DataBasHunters.Shared
+@inject HttpClient Http
+@using Microsoft.Data.SqlClient;
+
+<PageTitle>Games</PageTitle>
+
+<h1>Games</h1>
+
+<p>This component demonstrates fetching data from the server.</p>
+
+@if (games == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Date</th>
+                <th>Sum</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var game in games)
+            {
+                <tr>
+                    <td>@game.Id</td>
+                    <td>@game.Date</td>
+                    <td>@game.Sum</td>
+                    <td class="text-right">
+                        <button class="btn btn-danger btn-sm" role="button">Join</button>
+                    </td>
+
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<Cointoss> games;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var response = await Http.GetFromJsonAsync<List<Cointoss>>("GetGames");
+
+        if (response != null)
+        {
+            games = response;
+        }
+    }
+}
