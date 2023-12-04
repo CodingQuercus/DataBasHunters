@@ -31,7 +31,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-app.UseAuthentication(); // Place this line before app.UseAuthorization() if you have it.
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapRazorPages();
