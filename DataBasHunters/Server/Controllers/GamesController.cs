@@ -26,5 +26,17 @@ namespace DataBasHunters.Server.Controllers
 
             return Ok(games);
         }
+        [HttpPost]
+        public IActionResult CreateGame(Cointoss ct)
+        {
+            GameMethods gm = new GameMethods();
+            int i = 0;
+            string error = "";
+            i = gm.CreateGame(ct, out error);
+            ViewBag.error = error;
+            ViewBag.antal = i;
+
+            return Ok();
+        }
     }
 }
