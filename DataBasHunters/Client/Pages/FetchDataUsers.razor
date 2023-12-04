@@ -1,6 +1,7 @@
 ﻿@page "/fetchdatausers"
 @using DataBasHunters.Shared
 @inject HttpClient Http
+@using Microsoft.Data.SqlClient;
 
 <PageTitle>Users</PageTitle>
 
@@ -29,7 +30,7 @@ else
                 <tr>
                     <td>@user.Id</td>
                     <td>@user.Funds</td>
-                    <td>@user.Usernamne</td>
+                    <td>@user.Username</td>
                     <td>@user.Password</td>
                 </tr>
             }
@@ -38,11 +39,15 @@ else
 }
 
 @code {
-    private User[]? users;
+    private List<User> users;
 
     protected override async Task OnInitializedAsync()
     {
-        users = await Http.GetFromJsonAsync<User[]>("WeatherForecast");
+        var response = await Http.GetFromJsonAsync<List<User>>("GetUsers");
+
+        if (response != null)
+        {
+            users = response;
+        }
     }
 }
-
