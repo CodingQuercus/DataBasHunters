@@ -27,19 +27,6 @@ namespace DataBasHunters.Server.Controllers
             return Ok(games);
         }
 
-        [HttpPost]
-        public IActionResult CreateGame(Cointoss ct)
-        {
-            GameMethods gm = new GameMethods();
-            int i = 0;
-            string error = "";
-            i = gm.CreateGame(ct, out error);
-            ViewBag.error = error;
-            ViewBag.antal = i;
-
-            return Ok(new { error, antal = i });
-        }
-
         [HttpPost("InsertGame")]
         public IActionResult InsertGame([FromBody] Cointoss newCointoss)
         {
@@ -63,5 +50,24 @@ namespace DataBasHunters.Server.Controllers
                 return BadRequest(new { Error = "Invalid data submitted." });
             }
         }
+
+        [HttpGet("Coinflip")]
+        public IActionResult Coinflip(int id)
+        {
+            GameMethods gm = new GameMethods();
+            string error = "";
+
+            Cointoss cointoss = gm.GetGameById(id, out error);
+
+            if (cointoss == null)
+            {
+                ViewBag.error = error;
+                return RedirectToAction("Coinflip");
+            }
+
+            return View(cointoss);
+        }
+
+
     }
 }

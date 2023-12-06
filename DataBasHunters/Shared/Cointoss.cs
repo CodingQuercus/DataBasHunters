@@ -12,5 +12,4 @@ public class Cointoss
 
     public bool Heads { get; set; }
 
-
 }

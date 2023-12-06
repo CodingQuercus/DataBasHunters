@@ -125,5 +125,46 @@ namespace DataBasHunters.Shared
             }
         }
 
+        public Cointoss GetGameById(int id, out string errorMsg)
+        {
+            SqlConnection dbConnection = new SqlConnection();
+            dbConnection.ConnectionString = @"Data Source=localhost,1433; DataBase=YourDatabaseName; User Id=yourUsername; Password=yourPassword;";
+            String sqlstring = "SELECT Id, Date, Sum FROM [Cointoss] WHERE Id = @Id";
+            SqlCommand dbCommand = new SqlCommand(sqlstring, dbConnection);
+
+            dbCommand.Parameters.Add("@Id", SqlDbType.Int).Value = id;
+
+            try
+            {
+                dbConnection.Open();
+
+                SqlDataReader reader = dbCommand.ExecuteReader();
+
+                if (reader.Read())
+                {
+                    Cointoss game = new Cointoss();
+                    game.Id = Convert.ToInt32(reader["Id"]);
+                    game.Date = Convert.ToDateTime(reader["Date"]);
+                    game.Sum = Convert.ToInt32(reader["Sum"]);
+
+                    errorMsg = "";
+                    return game;
+                }
+                else
+                {
+                    errorMsg = "Game not found";
+                    return null;
+                }
+            }
+            catch (Exception e)
+            {
+                errorMsg = e.Message;
+                return null;
+            }
+            finally
+            {
+                dbConnection.Close();
+            }
+        }
     }
 }
