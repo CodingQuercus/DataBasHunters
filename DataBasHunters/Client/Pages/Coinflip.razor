@@ -64,16 +64,19 @@
     {
         var flipResult = new Random().NextDouble();
 
+        int heads;
+
         if (flipResult <= 0.5)
         {
             coinClass = "heads";
-            Console.WriteLine("it is head");
+            heads = 1;
         }
         else
         {
             coinClass = "tails";
-            Console.WriteLine("it is tails");
+            heads = 0;
         }
+
 
         // Notify Blazor to refresh the UI
         StateHasChanged();
