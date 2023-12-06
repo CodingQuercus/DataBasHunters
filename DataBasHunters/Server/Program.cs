@@ -12,6 +12,17 @@ builder.Services.AddAuthentication(options =>
     options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
 }).AddCookie();
 
+builder.Services.AddCors(policy => {
+
+    policy.AddPolicy("CORS", builder =>
+      builder.WithOrigins("https://*:5116/")
+        .SetIsOriginAllowedToAllowWildcardSubdomains()
+        .AllowAnyOrigin()
+
+
+ );
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -25,13 +36,16 @@ else
     app.UseHsts();
 }
 
+
 app.UseHttpsRedirection();
 app.UseBlazorFrameworkFiles();
 app.UseStaticFiles();
 
-app.UseRouting();
-
 app.UseAuthentication();
+
+app.UseCors("CORS");
+
+app.UseRouting();
 app.UseAuthorization();
 
 app.MapRazorPages();

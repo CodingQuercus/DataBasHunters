@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.Data.Common;
 using Microsoft.Data.SqlClient;
 
@@ -55,7 +56,7 @@ namespace DataBasHunters.Shared
 
         public int CreateGame(Cointoss ct, out string errormsg)
         {
-            errormsg = ""; // Initialize with a default value
+            errormsg = "";
             SqlConnection dbConnection = new SqlConnection();
             dbConnection.ConnectionString = @"Server=tcp:basehunters.database.windows.net,1433;Initial Catalog=databasprojekt;Persist Security Info=False;User ID=hunters;Password=COOLkille15;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
             string sqlstring = "INSERT INTO [Cointoss] (Date, Sum, Heads) VALUES (@Date, @Sum, @Heads)";
@@ -80,6 +81,37 @@ namespace DataBasHunters.Shared
                     errormsg = "De gåå int";
                     return 0;
                 }
+                return i;
+            }
+            catch (Exception e)
+            {
+                errormsg = e.Message;
+                return 0;
+            }
+            finally
+            {
+                dbConnection.Close();
+            }
+        }
+
+        public int AddGame(Cointoss ct, out string errormsg)
+        {
+            SqlConnection dbConnection = new SqlConnection();
+            dbConnection.ConnectionString = @"Server=tcp:basehunters.database.windows.net,1433;Initial Catalog=databasprojekt;Persist Security Info=False;User ID=hunters;Password=COOLkille15;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
+            string sqlstring = "INSERT INTO [Cointoss] (Date, Sum, Heads) VALUES (@Date, @Sum, @Heads)";
+            SqlCommand dbCommand = new SqlCommand(sqlstring, dbConnection);
+
+            dbCommand.Parameters.Add("@Date", SqlDbType.NVarChar, 50).Value = ct.Date;
+            dbCommand.Parameters.Add("@Sum", SqlDbType.NVarChar, 50).Value = ct.Sum;
+            dbCommand.Parameters.Add("@Heads", SqlDbType.NVarChar, 50).Value = ct.Heads;
+
+
+            try
+            {
+                dbConnection.Open();
+                int i = dbCommand.ExecuteNonQuery();
+                if (i == 1) { errormsg = ""; }
+                else { errormsg = "Failed to create game, try again"; };
                 return i;
             }
             catch (Exception e)

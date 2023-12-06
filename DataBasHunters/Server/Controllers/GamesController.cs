@@ -39,5 +39,29 @@ namespace DataBasHunters.Server.Controllers
 
             return Ok(new { error, antal = i });
         }
+
+        [HttpPost("InsertCustomer")]
+        public IActionResult InsertCustomer([FromBody] Cointoss newCointoss)
+        {
+            if (ModelState.IsValid)
+            {
+                string error = "";
+                GameMethods cm = new GameMethods();
+                var success = cm.AddGame(newCointoss, out error);
+
+                if (success == 1)
+                {
+                    return Ok(newCointoss);
+                }
+                else
+                {
+                    return BadRequest(new { Error = error });
+                }
+            }
+            else
+            {
+                return BadRequest(new { Error = "Invalid data submitted." });
+            }
+        }
     }
 }
