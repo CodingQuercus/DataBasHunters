@@ -1,0 +1,81 @@
+﻿@page "/coinflip"
+@using Microsoft.AspNetCore.Components.Web
+@using System
+
+<div id="coin" class="@coinClass" @onclick="FlipCoinHandler">
+    <div class="side-a"></div>
+    <div class="side-b"></div>
+</div>
+<h1>Click on coin to flip</h1>
+
+<style>
+    body {
+        padding-top: 50px;
+        background: #F7F7F7;
+        perspective: 800px;
+    }
+
+    h1 {
+        text-align: center;
+    }
+
+    #coin {
+        position: relative;
+        margin: 0 auto;
+        width: 150px; /* Adjust the width */
+        height: 150px; /* Adjust the height */
+        cursor: pointer;
+        transform-style: preserve-3d;
+        transition: transform 2s ease-in; /* Adjust the duration */
+    }
+
+        #coin div {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            box-shadow: inset 0 0 45px rgba(255, 255, 255, .3), 0 12px 20px -10px rgba(0, 0, 0, .4);
+            position: absolute;
+            backface-visibility: hidden;
+        }
+
+    .side-a {
+        background-color: #bb0000;
+        z-index: 100;
+    }
+
+    .side-b {
+        background-color: #3e3e3e;
+        transform: rotateY(-180deg);
+    }
+
+    .heads {
+        transform: rotateY(1800deg);
+    }
+
+    .tails {
+        transform: rotateY(1980deg);
+    }
+</style>
+
+@code {
+    private string coinClass = "";
+
+    private void FlipCoinHandler()
+    {
+        var flipResult = new Random().NextDouble();
+
+        if (flipResult <= 0.5)
+        {
+            coinClass = "heads";
+            Console.WriteLine("it is head");
+        }
+        else
+        {
+            coinClass = "tails";
+            Console.WriteLine("it is tails");
+        }
+
+        // Notify Blazor to refresh the UI
+        StateHasChanged();
+    }
+}
