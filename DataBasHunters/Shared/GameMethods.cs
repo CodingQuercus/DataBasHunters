@@ -101,7 +101,7 @@ namespace DataBasHunters.Shared
             string sqlstring = "INSERT INTO [Cointoss] (Date, Sum, Heads) VALUES (@Date, @Sum, @Heads)";
             SqlCommand dbCommand = new SqlCommand(sqlstring, dbConnection);
 
-            dbCommand.Parameters.Add("@Date", SqlDbType.NVarChar, 50).Value = ct.Date;
+            dbCommand.Parameters.Add("@Date", SqlDbType.NVarChar, 50).Value = DateTime.Now;
             dbCommand.Parameters.Add("@Sum", SqlDbType.NVarChar, 50).Value = ct.Sum;
             dbCommand.Parameters.Add("@Heads", SqlDbType.NVarChar, 50).Value = ct.Heads;
 

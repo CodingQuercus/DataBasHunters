@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using Microsoft.Data.SqlClient;
 
 namespace DataBasHunters.Shared
@@ -48,6 +49,35 @@ namespace DataBasHunters.Shared
             }
 
             return userList;
+        }
+
+        public int AddUser(User user, out string errormsg)
+        {
+            SqlConnection dbConnection = new SqlConnection();
+            dbConnection.ConnectionString = @"Server=tcp:basehunters.database.windows.net,1433;Initial Catalog=databasprojekt;Persist Security Info=False;User ID=hunters;Password=COOLkille15;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
+            string sqlstring = "INSERT INTO [User] (Username, Password) VALUES (@Username, @Password)";
+            SqlCommand dbCommand = new SqlCommand(sqlstring, dbConnection);
+
+            dbCommand.Parameters.Add("@Username", SqlDbType.NVarChar, 50).Value = user.Username;
+            dbCommand.Parameters.Add("@Password", SqlDbType.NVarChar, 50).Value = user.Password;
+
+            try
+            {
+                dbConnection.Open();
+                int i = dbCommand.ExecuteNonQuery();
+                if (i == 1) { errormsg = ""; }
+                else { errormsg = "Failed to create game, try again"; };
+                return i;
+            }
+            catch (Exception e)
+            {
+                errormsg = e.Message;
+                return 0;
+            }
+            finally
+            {
+                dbConnection.Close();
+            }
         }
     }
 

@@ -22,11 +22,6 @@
         </select>
     </div>
 
-    <div class="form-group">
-        <label>Enter the date</label>
-        <input type="datetime" @bind="NewCointoss.Date"/>
-    </div>
-
     <br />
 
     <button type="submit" class="btn btn-primary">Create game</button>
@@ -37,7 +32,7 @@
 
     private async Task CreateGameHandler()
     {
-        var response = await Http.PostAsJsonAsync("InsertCustomer", NewCointoss);
+        var response = await Http.PostAsJsonAsync("InsertGame", NewCointoss);
 
         if (response.IsSuccessStatusCode)
         {

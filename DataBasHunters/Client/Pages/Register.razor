@@ -1,29 +1,29 @@
 ﻿@page "/register"
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+@using DataBasHunters.Shared;
 
 <PageTitle>Register</PageTitle>
 
 <div class="register-box">
-    <h2>Registrera användare</h2>
-    <form>
+    <h2>Register user</h2>
+    <form @onsubmit="CreateUser">
         <div class="user-box">
-            <input type="text" name="" required="">
-            <label>Användarnamn</label>
+            <input type="text" name="" required="" @bind="newUser.Username">
+            <label>Username</label>
         </div>
         <div class="user-box">
-            <input type="password" name="" required="">
-            <label>Lösenord</label>
+            <input type="password" name="" required="" @bind="newUser.Password">
+            <label>Password</label>
         </div>
-        <a href="#">
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
-            Registrera
-        </a>
+
+
+        <button type="submit">Register</button>
+
     </form>
 
     <div>
-        <p>Har du redan ett konto? <a href="login">Logga in här</a></p>
+        <p>Already have an account?<a href="login">Log in here</a></p>
     </div>
 </div>
 
@@ -158,15 +158,23 @@
                 animation: btn-anim4 1s linear infinite;
                 animation-delay: .75s
             }
-
 </style>
 
 @code {
-    private int currentCount = 0;
+    private User newUser = new User();
 
-    private void IncrementCount()
+    private async Task CreateUser()
     {
-        currentCount++;
+        var response = await Http.PostAsJsonAsync("InsertUser", newUser);
+
+        if (response.IsSuccessStatusCode)
+        {
+            NavigationManager.NavigateTo("/login");
+        }
+        else
+        {
+            // Handle errors, show error message, etc.
+        }
     }
 }
 

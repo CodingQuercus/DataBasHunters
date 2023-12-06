@@ -26,5 +26,29 @@ namespace DataBasHunters.Server.Controllers
 
             return Ok(users);
         }
+
+        [HttpPost("InsertUser")]
+        public IActionResult InserUser([FromBody] User newUser)
+        {
+            if (ModelState.IsValid)
+            {
+                string error = "";
+                UserMethods um = new UserMethods();
+                var success = um.AddUser(newUser, out error);
+
+                if (success == 1)
+                {
+                    return Ok(newUser);
+                }
+                else
+                {
+                    return BadRequest(new { Error = error });
+                }
+            }
+            else
+            {
+                return BadRequest(new { Error = "Invalid data submitted." });
+            }
+        }
     }
 }

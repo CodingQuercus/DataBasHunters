@@ -40,8 +40,8 @@ namespace DataBasHunters.Server.Controllers
             return Ok(new { error, antal = i });
         }
 
-        [HttpPost("InsertCustomer")]
-        public IActionResult InsertCustomer([FromBody] Cointoss newCointoss)
+        [HttpPost("InsertGame")]
+        public IActionResult InsertGame([FromBody] Cointoss newCointoss)
         {
             if (ModelState.IsValid)
             {
