@@ -50,5 +50,31 @@ namespace DataBasHunters.Server.Controllers
                 return BadRequest(new { Error = "Invalid data submitted." });
             }
         }
+
+        [HttpPost("LoginUser")]
+        public IActionResult LoginUser([FromBody] User user)
+        {
+            if (ModelState.IsValid)
+            {
+                string error = "";
+                UserMethods um = new UserMethods();
+                var success = um.LoginUser(user, out error);
+
+                if (success == 1)
+                {
+                    return Ok(user);
+                }
+                else
+                {
+                    return BadRequest(new { Error = error });
+                }
+            }
+            else
+            {
+                return BadRequest(new { Error = "Invalid data submitted." });
+            }
+        }
+
+
     }
 }

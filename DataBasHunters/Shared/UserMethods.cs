@@ -79,6 +79,36 @@ namespace DataBasHunters.Shared
                 dbConnection.Close();
             }
         }
+
+        public int LoginUser(User user, out string errormsg)
+        {
+            SqlConnection dbConnection = new SqlConnection();
+            dbConnection.ConnectionString = @"Server=tcp:basehunters.database.windows.net,1433;Initial Catalog=databasprojekt;Persist Security Info=False;User ID=hunters;Password=COOLkille15;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
+            string sqlstring = "SELECT [Id] FROM [User] WHERE Username = @Username AND Password = @Password";
+            SqlCommand dbCommand = new SqlCommand(sqlstring, dbConnection);
+
+            dbCommand.Parameters.Add("@Username", SqlDbType.NVarChar, 50).Value = user.Username;
+            dbCommand.Parameters.Add("@Password", SqlDbType.NVarChar, 50).Value = user.Password;
+
+            try
+            {
+                dbConnection.Open();
+                object result = dbCommand.ExecuteScalar();
+                int i = (result != null) ? 1 : 0;
+                if (i == 1) { errormsg = ""; }
+                else { errormsg = "Failed to login in user, try again"; };
+                return i;
+            }
+            catch (Exception e)
+            {
+                errormsg = e.Message;
+                return 0;
+            }
+            finally
+            {
+                dbConnection.Close();
+            }
+        }
     }
 
 }
