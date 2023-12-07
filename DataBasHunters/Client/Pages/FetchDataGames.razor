@@ -33,7 +33,7 @@ else
                     <td>@game.Date</td>
                     <td>@game.Sum</td>
                     <td class="text-right">
-                        <button class="btn btn-danger btn-sm" role="button">Join</button>
+                        <button class="btn btn-danger btn-sm" role="button" @onclick="JoinGame">Join</button>
                     </td>
                 </tr>
             }
@@ -53,4 +53,7 @@ else
             games = response;
         }
     }
+
+    private void JoinGame() { Console.WriteLine("1"); }
+
 }
