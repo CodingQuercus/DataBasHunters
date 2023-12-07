@@ -1,19 +1,51 @@
-﻿@page "/UserProfile"
+﻿@page "/userprofile"
 
-<PageTitle>Counter</PageTitle>
+@using DataBasHunters.Shared
+@inject HttpClient Http
+@using Microsoft.Data.SqlClient;
+
+<PageTitle>Profile</PageTitle>
 
 <h1>User profile</h1>
 
-<p role="status">Current count: @currentCount</p>
-
-<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+@if (user == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Funds</th>
+                <th>Username</th>
+                <th>Password</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                 <td>@user.Id</td>
+                 <td>@user.Funds</td>
+                 <td>@user.Username</td>
+                 <td>@user.Password</td>
+            </tr>
+        </tbody>
+    </table>
+}
 
 @code {
-    private int currentCount = 0;
+    private User user;
 
-    private void IncrementCount()
+    protected override async Task OnInitializedAsync()
     {
-        currentCount++;
+        var response = await Http.GetFromJsonAsync<User>("GetUser");
+
+        if (response != null)
+        {
+            user = response;
+        }
     }
 }
+
 
