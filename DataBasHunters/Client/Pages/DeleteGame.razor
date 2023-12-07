@@ -1,11 +1,11 @@
-﻿@page "/creategame"
+﻿@page "/DeleteGame"
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
 @using DataBasHunters.Shared;
 
 <h1>Create New Customer</h1>
 
-<form @onsubmit="CreateGameHandler">
+<form @onsubmit="DeleteGameHandler">
     <div class="form-group">
         <label for="Sum">Enter your bet</label>
         <input type="number" id="Sum" @bind="NewCointoss.Sum" />
@@ -30,9 +30,9 @@
 @code {
     private Cointoss NewCointoss = new Cointoss();
 
-    private async Task CreateGameHandler()
+    private async Task DeleteGameHandler()
     {
-        var response = await Http.PostAsJsonAsync("InsertGame", NewCointoss);
+        var response = await Http.PostAsJsonAsync("RemoveGame", NewCointoss);
 
         if (response.IsSuccessStatusCode)
         {
