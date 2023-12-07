@@ -2,7 +2,7 @@
 
 @using DataBasHunters.Shared
 @inject HttpClient Http
-@using Microsoft.Data.SqlClient;
+@inject NavigationManager NavigationManager
 
 <PageTitle>Profile</PageTitle>
 
@@ -25,10 +25,10 @@ else
         </thead>
         <tbody>
             <tr>
-                 <td>@user.Id</td>
-                 <td>@user.Funds</td>
-                 <td>@user.Username</td>
-                 <td>@user.Password</td>
+                <td>@user.Id</td>
+                <td>@user.Funds</td>
+                <td>@user.Username</td>
+                <td>@user.Password</td>
             </tr>
         </tbody>
     </table>
@@ -44,6 +44,12 @@ else
         if (response != null)
         {
             user = response;
+        }
+
+        else
+        {
+            // Redirect to login page if user is not authenticated
+            NavigationManager.NavigateTo("/login");// FUNGERAR INTE??????
         }
     }
 }
