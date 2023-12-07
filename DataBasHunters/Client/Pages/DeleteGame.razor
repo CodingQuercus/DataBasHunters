@@ -1,28 +1,15 @@
-﻿@page "/DeleteGame"
+﻿@page "/deleteGame"
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
 @using DataBasHunters.Shared;
 
-<h1>Create New Customer</h1>
+<h1>Delete Game</h1>
 
 <form @onsubmit="DeleteGameHandler">
     <div class="form-group">
-        <label for="Sum">Enter your bet</label>
-        <input type="number" id="Sum" @bind="NewCointoss.Sum" />
+        <label for="Sum">Delete</label>     
         <span></span>
     </div>
-
-    <br />
-
-    <div class="form-group">
-        <label>Heads or tails?</label>
-        <select name="Heads" @bind="NewCointoss.Heads">
-            <option value="1">Heads</option>
-            <option value="0">Tails</option>
-        </select>
-    </div>
-
-    <br />
 
     <button type="submit" class="btn btn-primary">Create game</button>
 </form>
@@ -32,16 +19,16 @@
 
     private async Task DeleteGameHandler()
     {
-        var response = await Http.PostAsJsonAsync("RemoveGame", NewCointoss);
+        //var response = await Http.PostAsJsonAsync("RemoveGame", CoinTossId);
 
-        if (response.IsSuccessStatusCode)
-        {
-            NavigationManager.NavigateTo("/fetchdatagames");
-        }
-        else
-        {
+       // if (response.IsSuccessStatusCode)
+        //{
+       //     NavigationManager.NavigateTo("/fetchdatagames");
+       // }
+        //else
+       // {
             // Handle errors, show error message, etc.
-        }
+       // }
     }
 }
 

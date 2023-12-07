@@ -52,7 +52,7 @@ namespace DataBasHunters.Server.Controllers
             }
         }
 
-        [HttpGet("Coinflip")]
+       [HttpGet("Coinflip")]
         public IActionResult Coinflip(int id)
         {
             GameMethods gm = new GameMethods();
@@ -68,6 +68,32 @@ namespace DataBasHunters.Server.Controllers
 
             return View(cointoss);
         }
+        /*[HttpGet("Coinflip")]
+        public IActionResult Coinflip()
+        {
+            if (int.TryParse(HttpContext.Request.Query["id"], out int gameId))
+            {
+                GameMethods gm = new GameMethods();
+                string error = "";
+
+                Cointoss cointoss = gm.GetGameById(gameId, out error);
+
+                if (cointoss == null)
+                {
+                    ViewBag.error = error;
+                   
+                }
+
+                return Ok(cointoss);
+            }
+            else
+            {
+                // Handle the case where the "id" parameter is not a valid integer in the query string.
+                ViewBag.error = "Invalid game ID in the query string.";
+                return RedirectToAction("fetchdatagames");
+            }
+        }/*
+
 
 
     }

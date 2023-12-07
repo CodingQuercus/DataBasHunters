@@ -1,5 +1,7 @@
-﻿@page "/coinflip"
+﻿@page "/coinflip/{gameId}"
+
 @using System
+@inject HttpClient Http
 
 <PageTitle>Coinflip</PageTitle>
 
@@ -61,6 +63,9 @@
 @code {
     private string coinClass = "";
 
+    [Parameter]
+    public string gameId { get; set; }
+
     private void FlipCoinHandler()
     {
         var flipResult = new Random().NextDouble();
@@ -78,8 +83,9 @@
             heads = 0;
         }
 
-
         // Notify Blazor to refresh the UI
         StateHasChanged();
+
     }
+    
 }

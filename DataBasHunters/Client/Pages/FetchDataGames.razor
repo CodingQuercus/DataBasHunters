@@ -1,6 +1,7 @@
 ﻿@page "/fetchdatagames"
 @using DataBasHunters.Shared
 @inject HttpClient Http
+@inject NavigationManager NavigationManager
 @using Microsoft.Data.SqlClient;
 
 <PageTitle>Games</PageTitle>
@@ -33,7 +34,7 @@ else
                     <td>@game.Date</td>
                     <td>@game.Sum</td>
                     <td class="text-right">
-                        <button class="btn btn-danger btn-sm" role="button" @onclick="JoinGame">Join</button>
+                        <button class="btn btn-danger btn-sm" role="button" @onclick="() => JoinGame(game.Id)">Join</button>
                     </td>
                 </tr>
             }
@@ -54,6 +55,9 @@ else
         }
     }
 
-    private void JoinGame() { Console.WriteLine("1"); }
-
+    private void JoinGame(int gameId)
+    {
+        // Redirect to coinflip/game.id
+        NavigationManager.NavigateTo($"coinflip/{gameId}");
+    }
 }
