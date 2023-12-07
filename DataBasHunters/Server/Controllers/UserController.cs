@@ -99,8 +99,8 @@ namespace DataBasHunters.Server.Controllers
 
                 if (success == 1)
                 {
-                    HttpContext.Session.SetInt32("UserId", user.Id);
-                    Console.WriteLine($"User Id set to: {user.Id}");
+                    int id = um.GetUserId(user.Username, out error);
+                    HttpContext.Session.SetInt32("UserId", id);
                     return Ok(user);
                 }
                 else

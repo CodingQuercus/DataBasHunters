@@ -109,6 +109,47 @@ namespace DataBasHunters.Shared
                 dbConnection.Close();
             }
         }
+        public int GetUserId(string Username, out string errormsg)
+        {
+            SqlConnection dbConnection = new SqlConnection();
+            dbConnection.ConnectionString = @"Server=tcp:basehunters.database.windows.net,1433;Initial Catalog=databasprojekt;Persist Security Info=False;User ID=hunters;Password=COOLkille15;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
+            string sqlstring = "SELECT [Id] FROM [User] WHERE Username = @Username";
+            SqlCommand dbCommand = new SqlCommand(sqlstring, dbConnection);
+
+            dbCommand.Parameters.Add("@Username", SqlDbType.NVarChar, 50).Value = Username;
+
+            try
+            {
+                dbConnection.Open();
+
+                // Använd ExecuteScalar för att hämta användar-ID från databasen
+                object result = dbCommand.ExecuteScalar();
+
+                if (result != null)
+                {
+                    // Om användar-ID hittades, returnera det
+                    errormsg = "";
+                    return Convert.ToInt32(result);
+                }
+                else
+                {
+                    // Om ingen användare hittades, sätt felmeddelande och returnera 0
+                    errormsg = "User not found";
+                    return 0;
+                }
+            }
+            catch (Exception e)
+            {
+                // Om ett undantag uppstår, sätt felmeddelande och returnera 0
+                errormsg = e.Message;
+                return 0;
+            }
+            finally
+            {
+                dbConnection.Close();
+            }
+        }
+
 
         // DONT USE
         public void EncryptUsers(out string errormsg)
