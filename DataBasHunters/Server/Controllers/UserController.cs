@@ -62,6 +62,7 @@ namespace DataBasHunters.Server.Controllers
 
                 if (success == 1)
                 {
+                    HttpContext.Session.SetInt32("UserId", user.Id);
                     return Ok(user);
                 }
                 else

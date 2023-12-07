@@ -10,7 +10,18 @@ builder.Services.AddRazorPages();
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme; // Set the default challenge scheme
 }).AddCookie();
+
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(2);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+
+// Add to be able to use session variables in views
+builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddCors(policy => {
 
@@ -38,7 +49,9 @@ else
 
 
 app.UseHttpsRedirection();
+
 app.UseBlazorFrameworkFiles();
+
 app.UseStaticFiles();
 
 app.UseAuthentication();
@@ -46,6 +59,9 @@ app.UseAuthentication();
 app.UseCors("CORS");
 
 app.UseRouting();
+
+app.UseSession();
+
 app.UseAuthorization();
 
 app.MapRazorPages();
