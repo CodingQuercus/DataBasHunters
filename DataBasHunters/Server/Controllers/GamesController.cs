@@ -34,7 +34,8 @@ namespace DataBasHunters.Server.Controllers
             {
                 string error = "";
                 GameMethods cm = new GameMethods();
-                var success = cm.AddGame(newCointoss, out error);
+                int userId = (int)HttpContext.Session.GetInt32("UserId");
+                var success = cm.AddGame(newCointoss, userId, out error);
 
                 if (success == 1)
                 {

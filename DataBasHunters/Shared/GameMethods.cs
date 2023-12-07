@@ -94,29 +94,33 @@ namespace DataBasHunters.Shared
             }
         }
 
-        public int AddGame(Cointoss ct, out string errormsg)
+        public int AddGame(Cointoss ct, int CreatorId, out string errormsg)
         {
             SqlConnection dbConnection = new SqlConnection();
             dbConnection.ConnectionString = @"Server=tcp:basehunters.database.windows.net,1433;Initial Catalog=databasprojekt;Persist Security Info=False;User ID=hunters;Password=COOLkille15;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
-            string sqlstring = "INSERT INTO [Cointoss] (Date, Sum, Heads) VALUES (@Date, @Sum, @Heads)";
+
+            string sqlstring = "EXECUTE [dbo].[CreateGame] @CreatorId, @Sum, @Heads, @CreationDate";
+
             SqlCommand dbCommand = new SqlCommand(sqlstring, dbConnection);
 
-            dbCommand.Parameters.Add("@Date", SqlDbType.NVarChar, 50).Value = DateTime.Now;
-            dbCommand.Parameters.Add("@Sum", SqlDbType.NVarChar, 50).Value = ct.Sum;
-            dbCommand.Parameters.Add("@Heads", SqlDbType.NVarChar, 50).Value = ct.Heads;
+            dbCommand.Parameters.Add("@CreatorId", SqlDbType.Int).Value = CreatorId;
+            dbCommand.Parameters.Add("@CreationDate", SqlDbType.DateTime).Value = DateTime.Now;
+            dbCommand.Parameters.Add("@Sum", SqlDbType.Int).Value = ct.Sum;
+            dbCommand.Parameters.Add("@Heads", SqlDbType.Int).Value = ct.Heads;
+
 
 
             try
             {
                 dbConnection.Open();
-                int i = dbCommand.ExecuteNonQuery();
-                if (i == 1) { errormsg = ""; }
-                else { errormsg = "Failed to create game, try again"; };
-                return i;
+                dbCommand.ExecuteScalar();
+                errormsg = "";
+
+                return 1;
             }
             catch (Exception e)
             {
-                errormsg = e.Message;
+                errormsg = $"Error: {e.Message}\nStackTrace: {e.StackTrace}";
                 return 0;
             }
             finally
@@ -124,6 +128,7 @@ namespace DataBasHunters.Shared
                 dbConnection.Close();
             }
         }
+
 
         public Cointoss GetGameById(int id, out string errorMsg)
         {

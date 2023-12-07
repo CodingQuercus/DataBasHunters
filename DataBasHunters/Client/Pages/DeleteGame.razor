@@ -1,0 +1,47 @@
+﻿@page "/creategame"
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+@using DataBasHunters.Shared;
+
+<h1>Create New Customer</h1>
+
+<form @onsubmit="CreateGameHandler">
+    <div class="form-group">
+        <label for="Sum">Enter your bet</label>
+        <input type="number" id="Sum" @bind="NewCointoss.Sum" />
+        <span></span>
+    </div>
+
+    <br />
+
+    <div class="form-group">
+        <label>Heads or tails?</label>
+        <select name="Heads" @bind="NewCointoss.Heads">
+            <option value="1">Heads</option>
+            <option value="0">Tails</option>
+        </select>
+    </div>
+
+    <br />
+
+    <button type="submit" class="btn btn-primary">Create game</button>
+</form>
+
+@code {
+    private Cointoss NewCointoss = new Cointoss();
+
+    private async Task CreateGameHandler()
+    {
+        var response = await Http.PostAsJsonAsync("InsertGame", NewCointoss);
+
+        if (response.IsSuccessStatusCode)
+        {
+            NavigationManager.NavigateTo("/fetchdatagames");
+        }
+        else
+        {
+            // Handle errors, show error message, etc.
+        }
+    }
+}
+
