@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using DataBasHunters.Shared;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -52,48 +53,41 @@ namespace DataBasHunters.Server.Controllers
             }
         }
 
-       [HttpGet("Coinflip")]
-        public IActionResult Coinflip(int id)
+        [HttpGet("GetMyGames")]
+        public IActionResult FetchDataMyGames()
         {
+
             GameMethods gm = new GameMethods();
             string error = "";
+            int userId = (int)HttpContext.Session.GetInt32("UserId");
+            var games = gm.GetMyGames(userId, out error);
 
-            Cointoss cointoss = gm.GetGameById(id, out error);
-
-            if (cointoss == null)
+            if (!string.IsNullOrEmpty(error))
             {
-                ViewBag.error = error;
-                return RedirectToAction("Coinflip");
+                return BadRequest(new { Error = error });
             }
 
-            return View(cointoss);
+            return Ok(games);
         }
-        /*[HttpGet("Coinflip")]
-        public IActionResult Coinflip()
-        {
-            if (int.TryParse(HttpContext.Request.Query["id"], out int gameId))
-            {
-                GameMethods gm = new GameMethods();
-                string error = "";
-
-                Cointoss cointoss = gm.GetGameById(gameId, out error);
-
-                if (cointoss == null)
+        /*
+               [HttpGet("Coinflip")]
+                public IActionResult Coinflip(int id)
                 {
-                    ViewBag.error = error;
-                   
+                    GameMethods gm = new GameMethods();
+                    string error = "";
+
+                    Cointoss cointoss = gm.GetGameById(id, out error);
+
+                    if (cointoss == null)
+                    {
+                        ViewBag.error = error;
+                        return RedirectToAction("Coinflip");
+                    }
+
+                    return View(cointoss);
                 }
 
-                return Ok(cointoss);
-            }
-            else
-            {
-                // Handle the case where the "id" parameter is not a valid integer in the query string.
-                ViewBag.error = "Invalid game ID in the query string.";
-                return RedirectToAction("fetchdatagames");
-            }
-        }/*
-
+                */
 
 
     }
