@@ -50,6 +50,113 @@ namespace DataBasHunters.Shared
 
             return userList;
         }
+        public User GetUser(int id, out string errormsg)
+        {
+            SqlConnection dbConnection = new SqlConnection();
+            dbConnection.ConnectionString = @"Server=tcp:basehunters.database.windows.net,1433;Initial Catalog=databasprojekt;Persist Security Info=False;User ID=hunters;Password=COOLkille15;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
+            string sqlstring = "SELECT * FROM [User] WHERE Id = @id";
+            SqlCommand dbCommand = new SqlCommand(sqlstring, dbConnection);
+
+            dbCommand.Parameters.Add("@id", SqlDbType.Int).Value = id;
+
+            try
+            {
+                dbConnection.Open();
+                // Execute your query and populate the User object
+                using (SqlDataReader reader = dbCommand.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        User user = new User
+                        {
+                            Id = Convert.ToInt32(reader["Id"]),
+                            Funds = Convert.ToInt32(reader["Funds"]),
+                            Username = reader["Username"] as string,
+                            Password = reader["Password"] as string,
+                            Profilepicture = reader["Profilepicture"] as string
+                        };
+
+                        errormsg = ""; // Reset error message since there was no error
+                        return user;
+                    }
+                }
+
+                // If the reader didn't find any rows, set an appropriate error message
+                errormsg = "User not found.";
+                return null;
+            }
+            catch (Exception e)
+            {
+                // If an exception occurs, set the error message and return null
+                errormsg = e.Message;
+                return null;
+            }
+            finally
+            {
+                dbConnection.Close();
+            }
+        }
+        public CoinFlipModel GetCoinFlipModel(int id, out string errormsg)
+        {
+            CoinFlipModel coinFlipModel = new CoinFlipModel();
+            errormsg = "";
+
+            using (SqlConnection dbConnection = new SqlConnection("Server=tcp:basehunters.database.windows.net,1433;Initial Catalog=databasprojekt;Persist Security Info=False;User ID=hunters;Password=COOLkille15;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"))
+            {
+                string sqlstring = "SELECT u.*, c.* FROM [User] u " +
+                                   "JOIN [MadeGame] mg ON u.Id = mg.UserId " +
+                                   "JOIN [Cointoss] c ON mg.CointossId = c.Id " +
+                                   "WHERE u.Id = @id";
+
+                using (SqlCommand dbCommand = new SqlCommand(sqlstring, dbConnection))
+                {
+                    dbCommand.Parameters.Add("@id", SqlDbType.Int).Value = id;
+
+                    try
+                    {
+                        dbConnection.Open();
+
+                        using (SqlDataReader reader = dbCommand.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                coinFlipModel.creator = new User
+                                {
+                                    Id = Convert.ToInt32(reader["Id"]),
+                                    Funds = Convert.ToInt32(reader["Funds"]),
+                                    Username = reader["Username"] as string,
+                                    Password = reader["Password"] as string,
+                                    Profilepicture = reader["Profilepicture"] as string
+                                };
+
+                                coinFlipModel.game = new Cointoss
+                                {
+                                    Id = Convert.ToInt32(reader["CointossId"]),
+                                    Date = Convert.ToDateTime(reader["Date"]),
+                                    Active = Convert.ToInt32(reader["Active"]),
+                                    Sum = Convert.ToInt32(reader["Sum"]),
+                                    Heads = Convert.ToBoolean(reader["Heads"])
+                                };
+                            }
+                            else
+                            {
+                                // If the reader didn't find any rows, set an appropriate error message
+                                errormsg = "User not found.";
+                                return null;
+                            }
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        // If an exception occurs, set the error message and return null
+                        errormsg = e.Message;
+                        return null;
+                    }
+                }
+            }
+
+            return coinFlipModel;
+        }
 
         public int AddUser(User user, out string errormsg)
         {
