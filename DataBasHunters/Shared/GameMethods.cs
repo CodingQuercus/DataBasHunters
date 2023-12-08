@@ -207,7 +207,7 @@ namespace DataBasHunters.Shared
         public Cointoss GetGameById(int id, out string errorMsg)
         {
             SqlConnection dbConnection = new SqlConnection();
-            dbConnection.ConnectionString = @"Data Source=localhost,1433; DataBase=YourDatabaseName; User Id=yourUsername; Password=yourPassword;";
+            dbConnection.ConnectionString = @"Server=tcp:basehunters.database.windows.net,1433;Initial Catalog=databasprojekt;Persist Security Info=False;User ID=hunters;Password=COOLkille15;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
             string sqlstring = "SELECT Id, Date, Sum FROM [Cointoss] WHERE Id = @Id";
             SqlCommand dbCommand = new SqlCommand(sqlstring, dbConnection);
 

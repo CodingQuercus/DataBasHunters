@@ -96,28 +96,31 @@ namespace DataBasHunters.Server.Controllers
             }
         }
 
-        [HttpGet("Coinflip/{gameId}")]
+        [HttpGet("coinflip/{gameId}")]
         public IActionResult GetCoinflip([FromRoute] int gameId)
         {
             UserMethods um = new UserMethods();
+            GameMethods gm = new GameMethods();
             string error = "";
+            string error2 = "";
+            string error3 = "";
+            string error4 = "";
             CoinFlipModel cm = um.GetCoinFlipModel(gameId, out error);
             int opponentId = (int)HttpContext.Session.GetInt32("UserId");
 
             User opp = um.GetUser(opponentId, out error);
-            Console.WriteLine(gameId);
-           /* Console.WriteLine(cm.creator.Id);
-            Console.WriteLine(cm.game.Id);
-            Console.WriteLine(opponentId);
+            Cointoss gamect = gm.GetGameById(gameId, out error2);
+            int creatorId = um.GetUserByGameId(gameId, out error3);
+            User create = um.GetUser(creatorId, out error4);
 
             ViewModelCoinFlip vm = new ViewModelCoinFlip()
             {
-                creator = cm.creator,
+                creator = create,
                 opponent = opp,
-                game = cm.game
-            };*/
+                game = gamect
+            };
 
-            return Ok();
+            return Ok(vm);
         }  
 
 

@@ -96,9 +96,8 @@
 
     protected override async Task OnInitializedAsync()
     {
-        Console.WriteLine("Loading data...");
-        var response = await Http.GetAsync($"Coinflip/{gameId}");
+        var response = await Http.GetFromJsonAsync<ViewModelCoinFlip>($"coinflip/{gameId}");
 
-        }
+        Model = response;
     }
 }

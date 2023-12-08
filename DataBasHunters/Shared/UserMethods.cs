@@ -103,7 +103,7 @@ namespace DataBasHunters.Shared
 
             using (SqlConnection dbConnection = new SqlConnection("Server=tcp:basehunters.database.windows.net,1433;Initial Catalog=databasprojekt;Persist Security Info=False;User ID=hunters;Password=COOLkille15;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"))
             {
-                string sqlstring = "SELECT u.*, c.* FROM [User] u " +
+                string sqlstring = "SELECT * FROM [User] u " +
                                    "JOIN [MadeGame] mg ON u.Id = mg.UserId " +
                                    "JOIN [Cointoss] c ON mg.CointossId = c.Id " +
                                    "WHERE u.Id = @id";
@@ -330,6 +330,45 @@ namespace DataBasHunters.Shared
             }
         }
 
+        public int GetUserByGameId(int id, out string errorMsg)
+        {
+            SqlConnection dbConnection = new SqlConnection();
+            dbConnection.ConnectionString = @"Server=tcp:basehunters.database.windows.net,1433;Initial Catalog=databasprojekt;Persist Security Info=False;User ID=hunters;Password=COOLkille15;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
+            string sqlstring = "SELECT UserId FROM [MadeGame] WHERE CointossId = @Id";
+            SqlCommand dbCommand = new SqlCommand(sqlstring, dbConnection);
+
+            dbCommand.Parameters.Add("@Id", SqlDbType.Int).Value = id;
+
+            try
+            {
+                dbConnection.Open();
+
+                SqlDataReader reader = dbCommand.ExecuteReader();
+
+                if (reader.Read())
+                {
+                    
+                    int Id = Convert.ToInt32(reader["UserId"]);
+                  
+                    errorMsg = "";
+                    return Id;
+                }
+                else
+                {
+                    errorMsg = "Id not found";
+                    return 0;
+                }
+            }
+            catch (Exception e)
+            {
+                errorMsg = e.Message;
+                return 0;
+            }
+            finally
+            {
+                dbConnection.Close();
+            }
+        }
     }
 
 }
