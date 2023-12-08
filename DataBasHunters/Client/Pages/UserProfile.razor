@@ -1,57 +1,41 @@
-﻿@page "/userprofile"
-
+﻿@page "/UserProfile"
+@inherits LayoutComponentBase
 @using DataBasHunters.Shared
 @inject HttpClient Http
-@inject NavigationManager NavigationManager
 
-<PageTitle>Profile</PageTitle>
+<div class="container">
+    <h1>User Profile</h1>
 
-<h1>User profile</h1>
-
-@if (user == null)
-{
-    <p><em>Loading...</em></p>
-}
-else
-{
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Funds</th>
-                <th>Username</th>
-                <th>Password</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>@user.Id</td>
-                <td>@user.Funds</td>
-                <td>@user.Username</td>
-                <td>@user.Password</td>
-            </tr>
-        </tbody>
-    </table>
-}
+    @if (user != null)
+    {
+        <div>
+            <h3>Welcome, @user.Username!</h3>
+            <p>User ID: @user.Id</p>
+            <p>Funds: @user.Funds</p>
+            <p>Profile Picture: <img src="@user.Profilepicture" alt="Profile Picture" /></p>
+        </div>
+    }
+    else
+    {
+        <p>Please log in to view your profile.</p>
+    }
+</div>
 
 @code {
     private User user;
 
     protected override async Task OnInitializedAsync()
     {
-        var response = await Http.GetFromJsonAsync<User>("GetUser");
+        // Retrieve information about the logged-in user
+        // You need to implement a mechanism to get the logged-in user's information
+        // This is just a placeholder, and you should replace it with the actual logic.
 
-        if (response != null)
-        {
-            user = response;
-        }
+        // Make an HTTP request to UserProfile action to get user information
+        var response = await Http.GetAsync("GetUser");
 
-        else
+        if (response.IsSuccessStatusCode)
         {
-            // Redirect to login page if user is not authenticated
-            NavigationManager.NavigateTo("/login");// FUNGERAR INTE??????
+            user = await response.Content.ReadFromJsonAsync<User>();
         }
     }
 }
-
-
