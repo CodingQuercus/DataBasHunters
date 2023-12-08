@@ -96,25 +96,38 @@ namespace DataBasHunters.Server.Controllers
             }
         }
 
-        /*
-               [HttpGet("Coinflip")]
-                public IActionResult Coinflip(int id)
+        [HttpGet("Coinflip/{gameId}")]
+        public IActionResult GetCoinflip([FromRoute] int gameId)
+        {
+            try
+            {
+                Console.WriteLine($"Trying to get Coinflip for GameId: {gameId}");
+                string error = "";
+                UserMethods um = new UserMethods();
+                CoinFlipModel cm = um.GetCoinFlipModel(gameId, out error);
+
+                ViewModelCoinFlip vm = new ViewModelCoinFlip
                 {
-                    GameMethods gm = new GameMethods();
-                    string error = "";
+                    opponent = um.GetUser((int)HttpContext.Session.GetInt32("UserId"), out error),
+                    creator = cm.creator,
+                    game = cm.game
+                };
 
-                    Cointoss cointoss = gm.GetGameById(id, out error);
-
-                    if (cointoss == null)
-                    {
-                        ViewBag.error = error;
-                        return RedirectToAction("Coinflip");
-                    }
-
-                    return View(cointoss);
+                if (vm == null)
+                {
+                    Console.WriteLine($"Error in GetCoinflip: {error}");
+                    return BadRequest(new { Error = error });
                 }
 
-                */
+                Console.WriteLine("Successfully retrieved Coinflip data.");
+                return Ok(vm);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception in GetCoinflip: {ex.Message}");
+                return BadRequest(new { Error = "Error fetching ViewModelCoinFlip" });
+            }
+        }
 
 
     }
