@@ -6,29 +6,26 @@
 <h1>Delete Game</h1>
 
 <form @onsubmit="DeleteGameHandler">
-    <div class="form-group">
-        <label for="Sum">Delete</label>     
-        <span></span>
-    </div>
+   
 
-    <button type="submit" class="btn btn-primary">Create game</button>
+    <button type="submit" class="btn btn-primary">Delete game</button>
 </form>
 
 @code {
     private Cointoss NewCointoss = new Cointoss();
-
+    [Parameter]
+    public string gameId { get; set; }
     private async Task DeleteGameHandler()
     {
-        //var response = await Http.PostAsJsonAsync("RemoveGame", CoinTossId);
-
-       // if (response.IsSuccessStatusCode)
-        //{
-       //     NavigationManager.NavigateTo("/fetchdatagames");
-       // }
-        //else
-       // {
+        var response = await Http.PostAsync($"DeleteGame/{gameId}", null);
+        if (response.IsSuccessStatusCode)
+        {
+            NavigationManager.NavigateTo("/fetchdatamygames");
+        }
+        else
+        {
             // Handle errors, show error message, etc.
-       // }
+        }
     }
 }
 

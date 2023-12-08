@@ -69,6 +69,33 @@ namespace DataBasHunters.Server.Controllers
 
             return Ok(games);
         }
+        [HttpPost("DeleteGame/{gameId}")]
+        public IActionResult DeleteGame([FromRoute] int gameId)
+        {
+            if (ModelState.IsValid)
+            {
+                string error = "";
+                GameMethods cm = new GameMethods();
+
+                int userId = (int)HttpContext.Session.GetInt32("UserId");
+
+                var success = cm.DeleteGame(userId, gameId, out error);
+
+                if (success == 1)
+                {
+                    return Ok(gameId);
+                }
+                else
+                {
+                    return BadRequest(new { Error = error });
+                }
+            }
+            else
+            {
+                return BadRequest(new { Error = "Invalid data submitted." });
+            }
+        }
+
         /*
                [HttpGet("Coinflip")]
                 public IActionResult Coinflip(int id)

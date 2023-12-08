@@ -171,6 +171,37 @@ namespace DataBasHunters.Shared
                 dbConnection.Close();
             }
         }
+        public int DeleteGame(int userId, int gameId, out string errormsg)
+        {
+            SqlConnection dbConnection = new SqlConnection();
+            dbConnection.ConnectionString = @"Server=tcp:basehunters.database.windows.net,1433;Initial Catalog=databasprojekt;Persist Security Info=False;User ID=hunters;Password=COOLkille15;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
+
+            string sqlstring = "EXECUTE [dbo].[DropGame] @UserId, @GameId";
+
+            SqlCommand dbCommand = new SqlCommand(sqlstring, dbConnection);
+
+            dbCommand.Parameters.Add("@UserId", SqlDbType.Int).Value = userId;
+            dbCommand.Parameters.Add("@GameId", SqlDbType.Int).Value = gameId;
+
+
+            try
+            {
+                dbConnection.Open();
+                dbCommand.ExecuteScalar();
+                errormsg = "";
+
+                return 1;
+            }
+            catch (Exception e)
+            {
+                errormsg = $"Error: {e.Message}\nStackTrace: {e.StackTrace}";
+                return 0;
+            }
+            finally
+            {
+                dbConnection.Close();
+            }
+        }
 
 
         public Cointoss GetGameById(int id, out string errorMsg)
