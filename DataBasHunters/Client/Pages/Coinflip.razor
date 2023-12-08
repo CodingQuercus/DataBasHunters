@@ -96,24 +96,9 @@
 
     protected override async Task OnInitializedAsync()
     {
-        try
-        {
-            Console.WriteLine("Loading data...");
-            var response = await Http.GetFromJsonAsync<ViewModelCoinFlip>($"Coinflip/{gameId}");
+        Console.WriteLine("Loading data...");
+        var response = await Http.GetAsync($"Coinflip/{gameId}");
 
-            if (response != null)
-            {
-                Model = response;
-                Console.WriteLine("Data loaded successfully.");
-            }
-            else
-            {
-                Console.WriteLine("Response is null.");
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Exception in LoadData: {ex.Message}");
         }
     }
 }

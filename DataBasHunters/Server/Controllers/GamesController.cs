@@ -99,35 +99,27 @@ namespace DataBasHunters.Server.Controllers
         [HttpGet("Coinflip/{gameId}")]
         public IActionResult GetCoinflip([FromRoute] int gameId)
         {
-            try
+            UserMethods um = new UserMethods();
+            string error = "";
+            CoinFlipModel cm = um.GetCoinFlipModel(gameId, out error);
+            int opponentId = (int)HttpContext.Session.GetInt32("UserId");
+
+            User opp = um.GetUser(opponentId, out error);
+            Console.WriteLine(gameId);
+           /* Console.WriteLine(cm.creator.Id);
+            Console.WriteLine(cm.game.Id);
+            Console.WriteLine(opponentId);
+
+            ViewModelCoinFlip vm = new ViewModelCoinFlip()
             {
-                Console.WriteLine($"Trying to get Coinflip for GameId: {gameId}");
-                string error = "";
-                UserMethods um = new UserMethods();
-                CoinFlipModel cm = um.GetCoinFlipModel(gameId, out error);
+                creator = cm.creator,
+                opponent = opp,
+                game = cm.game
+            };*/
 
-                ViewModelCoinFlip vm = new ViewModelCoinFlip
-                {
-                    opponent = um.GetUser((int)HttpContext.Session.GetInt32("UserId"), out error),
-                    creator = cm.creator,
-                    game = cm.game
-                };
+            return Ok();
+        }  
 
-                if (vm == null)
-                {
-                    Console.WriteLine($"Error in GetCoinflip: {error}");
-                    return BadRequest(new { Error = error });
-                }
-
-                Console.WriteLine("Successfully retrieved Coinflip data.");
-                return Ok(vm);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Exception in GetCoinflip: {ex.Message}");
-                return BadRequest(new { Error = "Error fetching ViewModelCoinFlip" });
-            }
-        }
 
 
     }
