@@ -2,6 +2,7 @@
 using System.Data;
 using System.Data.Common;
 using Microsoft.Data.SqlClient;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace DataBasHunters.Shared
 {
@@ -53,6 +54,48 @@ namespace DataBasHunters.Shared
             return games;
         }
 
+        public List<Cointoss> GetMyGames(int id, out string errormsg)
+        {
+            SqlConnection dbConnection = new SqlConnection();
+            dbConnection.ConnectionString = @"Server=tcp:basehunters.database.windows.net,1433;Initial Catalog=databasprojekt;Persist Security Info=False;User ID=hunters;Password=COOLkille15;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
+            string sqlstring = "SELECT * FROM Cointoss c, MadeGame mg WHERE c.Id = mg.CointossId AND ACTIVE = 1 AND mg.UserId = @id";
+            SqlCommand dbCommand = new SqlCommand(sqlstring, dbConnection);
+            dbCommand.Parameters.Add("@id", System.Data.SqlDbType.Int).Value = id;
+
+
+            List<Cointoss> games = new List<Cointoss>();
+
+            try
+            {
+                dbConnection.Open();
+                SqlDataReader reader = dbCommand.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    Cointoss game = new Cointoss
+                    {
+                        Id = Convert.ToInt16(reader["Id"]),
+                        Date = Convert.ToDateTime(reader["Date"]),
+                        Active = Convert.ToInt16(reader["Active"]),
+                        Sum = Convert.ToInt16(reader["Sum"]),
+                        Heads = Convert.ToBoolean(reader["Heads"])
+                    };
+                    games.Add(game);
+                }
+                errormsg = "";
+            }
+            catch (Exception e)
+            {
+                errormsg = e.Message;
+                return new List<Cointoss>();
+            }
+            finally
+            {
+                dbConnection.Close();
+            }
+
+            return games;
+        }
 
         public int CreateGame(Cointoss ct, out string errormsg)
         {
@@ -128,13 +171,44 @@ namespace DataBasHunters.Shared
                 dbConnection.Close();
             }
         }
+        public int DeleteGame(int userId, int gameId, out string errormsg)
+        {
+            SqlConnection dbConnection = new SqlConnection();
+            dbConnection.ConnectionString = @"Server=tcp:basehunters.database.windows.net,1433;Initial Catalog=databasprojekt;Persist Security Info=False;User ID=hunters;Password=COOLkille15;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
+
+            string sqlstring = "EXECUTE [dbo].[DropGame] @UserId, @GameId";
+
+            SqlCommand dbCommand = new SqlCommand(sqlstring, dbConnection);
+
+            dbCommand.Parameters.Add("@UserId", SqlDbType.Int).Value = userId;
+            dbCommand.Parameters.Add("@GameId", SqlDbType.Int).Value = gameId;
+
+
+            try
+            {
+                dbConnection.Open();
+                dbCommand.ExecuteScalar();
+                errormsg = "";
+
+                return 1;
+            }
+            catch (Exception e)
+            {
+                errormsg = $"Error: {e.Message}\nStackTrace: {e.StackTrace}";
+                return 0;
+            }
+            finally
+            {
+                dbConnection.Close();
+            }
+        }
 
 
         public Cointoss GetGameById(int id, out string errorMsg)
         {
             SqlConnection dbConnection = new SqlConnection();
             dbConnection.ConnectionString = @"Data Source=localhost,1433; DataBase=YourDatabaseName; User Id=yourUsername; Password=yourPassword;";
-            String sqlstring = "SELECT Id, Date, Sum FROM [Cointoss] WHERE Id = @Id";
+            string sqlstring = "SELECT Id, Date, Sum FROM [Cointoss] WHERE Id = @Id";
             SqlCommand dbCommand = new SqlCommand(sqlstring, dbConnection);
 
             dbCommand.Parameters.Add("@Id", SqlDbType.Int).Value = id;
@@ -165,6 +239,41 @@ namespace DataBasHunters.Shared
             {
                 errorMsg = e.Message;
                 return null;
+            }
+            finally
+            {
+                dbConnection.Close();
+            }
+        }
+
+        public int FinishGame(Cointoss ct, int winnerId, int loserId, out string errormsg)
+        {
+            SqlConnection dbConnection = new SqlConnection();
+            dbConnection.ConnectionString = @"Server=tcp:basehunters.database.windows.net,1433;Initial Catalog=databasprojekt;Persist Security Info=False;User ID=hunters;Password=COOLkille15;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
+
+            string sqlstring = "EXECUTE [dbo].[WinnerWinner] @WinnerId, @LoserId, @Heads, @CreationDate";
+
+            SqlCommand dbCommand = new SqlCommand(sqlstring, dbConnection);
+
+            dbCommand.Parameters.Add("@WinnerId", SqlDbType.Int).Value = winnerId;
+            dbCommand.Parameters.Add("@CreationDate", SqlDbType.DateTime).Value = DateTime.Now;
+            dbCommand.Parameters.Add("@Sum", SqlDbType.Int).Value = ct.Sum;
+            dbCommand.Parameters.Add("@Heads", SqlDbType.Int).Value = ct.Heads;
+
+
+
+            try
+            {
+                dbConnection.Open();
+                dbCommand.ExecuteScalar();
+                errormsg = "";
+
+                return 1;
+            }
+            catch (Exception e)
+            {
+                errormsg = $"Error: {e.Message}\nStackTrace: {e.StackTrace}";
+                return 0;
             }
             finally
             {

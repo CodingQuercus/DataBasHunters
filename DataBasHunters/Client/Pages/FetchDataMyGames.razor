@@ -1,0 +1,63 @@
+﻿@page "/fetchdatamygames"
+@using DataBasHunters.Shared
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+@using Microsoft.Data.SqlClient;
+
+<PageTitle>Games</PageTitle>
+
+<h1>Games</h1>
+
+<div class="col-lg-3 text-right">
+    <a class="btn btn-success btn-sm" href="creategame" role="button">Create New</a>
+</div>
+@if (games == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Date</th>
+                <th>Sum</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var game in games)
+            {
+                <tr>
+                    <td>@game.Id</td>
+                    <td>@game.Date</td>
+                    <td>@game.Sum</td>
+                    <td class="text-right">
+                        <button class="btn btn-danger btn-sm" role="button" @onclick="() => DeleteGame(game.Id)">Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<Cointoss> games;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var response = await Http.GetFromJsonAsync<List<Cointoss>>("GetMyGames");
+
+        if (response != null)
+        {
+            games = response;
+        }
+    }
+
+    private void DeleteGame(int gameId)
+    {
+        // Redirect to coinflip/game.id
+        NavigationManager.NavigateTo($"DeleteGame/{gameId}");
+    }
+}
