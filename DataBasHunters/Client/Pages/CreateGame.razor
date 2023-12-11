@@ -9,7 +9,7 @@
     <div class="form-group">
         <label for="Sum">Enter your bet</label>
         <input type="number" id="Sum" @bind="NewCointoss.Sum" />
-        <span></span>
+        <span>@ValidationMessage</span>
     </div>
 
     <br />
@@ -34,8 +34,21 @@
 @code {
     private Cointoss NewCointoss = new Cointoss();
     private ViewModelProfile vm;
+    private string ValidationMessage;
+
     private async Task CreateGameHandler()
     {
+        // Validate the bet value
+        if (NewCointoss.Sum < 1 || NewCointoss.Sum > 10000)
+        {
+            ValidationMessage = "Bet value must be between 1 and 10,000.";
+            return;
+        }
+        else
+        {
+            ValidationMessage = ""; // Clear the validation message if the value is valid
+        }
+
         var response1 = await Http.GetAsync("GetUser");
 
         if (response1.IsSuccessStatusCode)
@@ -46,6 +59,7 @@
         {
             NavigationManager.NavigateTo("/Login");
         }
+
         var response = await Http.PostAsJsonAsync("InsertGame", NewCointoss);
 
         if (response.IsSuccessStatusCode)
@@ -58,4 +72,3 @@
         }
     }
 }
-
