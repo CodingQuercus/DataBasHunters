@@ -149,7 +149,7 @@ namespace DataBasHunters.Shared
             dbCommand.Parameters.Add("@CreatorId", SqlDbType.Int).Value = CreatorId;
             dbCommand.Parameters.Add("@CreationDate", SqlDbType.DateTime).Value = DateTime.Now;
             dbCommand.Parameters.Add("@Sum", SqlDbType.Int).Value = ct.Sum;
-            dbCommand.Parameters.Add("@Heads", SqlDbType.Int).Value = ct.Heads;
+            dbCommand.Parameters.Add("@Heads", SqlDbType.Bit).Value = ct.Heads;
 
 
 

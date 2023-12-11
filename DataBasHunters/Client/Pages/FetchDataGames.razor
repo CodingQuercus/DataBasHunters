@@ -22,16 +22,28 @@ else
             <tr>
                 <th>Id</th>
                 <th>Date</th>
+                <th>Bet</th>
                 <th>Sum</th>
                 <th></th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var game in games)
-            {
+            @foreach (var game in games){
+                    string bet;
+                    if (game.Heads == true)
+                    {
+                        bet = "Heads";
+                    }
+                    else
+                    {
+                        bet = "Tails";
+                    }
                 <tr>
                     <td>@game.Id</td>
                     <td>@game.Date</td>
+                    <td>
+                        @bet
+                    </td>
                     <td>@game.Sum</td>
                     <td class="text-right">
                         <button class="btn btn-danger btn-sm" role="button" @onclick="() => JoinGame(game.Id)">Join</button>
