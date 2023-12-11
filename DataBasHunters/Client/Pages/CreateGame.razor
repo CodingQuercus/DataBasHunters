@@ -16,10 +16,14 @@
 
     <div class="form-group">
         <label>Heads or tails?</label>
-        <select name="Heads" @bind="NewCointoss.Heads">
-            <option value="true">Heads</option>
-            <option value="false">Tails</option>
-        </select>
+        <div>
+            <label>
+                <input type="radio" name="Heads" checked="@NewCointoss.Heads" @onclick="() => NewCointoss.Heads = true" /> Heads
+            </label>
+            <label>
+                <input type="radio" name="Heads" checked="@(!NewCointoss.Heads)" @onclick="() => NewCointoss.Heads = false" /> Tails
+            </label>
+        </div>
     </div>
 
     <br />
@@ -32,6 +36,7 @@
 
     private async Task CreateGameHandler()
     {
+
         var response = await Http.PostAsJsonAsync("InsertGame", NewCointoss);
 
         if (response.IsSuccessStatusCode)
