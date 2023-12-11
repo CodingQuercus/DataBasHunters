@@ -15,8 +15,11 @@ namespace DataBasHunters.Shared
             SqlConnection dbConnection = new SqlConnection();
             dbConnection.ConnectionString = @"Server=tcp:basehunters.database.windows.net,1433;Initial Catalog=databasprojekt;Persist Security Info=False;User ID=hunters;Password=COOLkille15;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
 
-            string sqlstring = "SELECT * FROM [Transactions] WHERE Id = @id";
-            SqlCommand dbCommand = new SqlCommand(sqlstring, dbConnection);
+            string sqlString = "SELECT T.* FROM Transactions T " +
+                       "INNER JOIN UsersTransactions UT ON T.Id = UT.TransactionId " +
+                       "WHERE UT.UserId = @id";
+
+            SqlCommand dbCommand = new SqlCommand(sqlString, dbConnection);
 
             dbCommand.Parameters.Add("@id", SqlDbType.Int).Value = id;
 
