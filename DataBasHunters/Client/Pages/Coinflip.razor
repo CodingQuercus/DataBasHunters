@@ -4,7 +4,7 @@
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
 
-<PageTitle>Coinflip</PageTitle> 
+<PageTitle>Coinflip</PageTitle>
 
 <h1>Coinflip Game</h1>
 <p>Opponent: @Model.opponent?.Username</p>
@@ -16,6 +16,17 @@
     <div class="side-b"></div>
 </div>
 <h2>Click on coin to flip</h2>
+
+<!-- Display winner section -->
+@if (Model != null && Model.game != null && Model.game.Active == 0)
+{
+    if (finishGame.winner != null)
+    {
+        <h3>Winner: @finishGame?.winner?.Username</h3>
+        <h3>Amount: @Model.game.Sum</h3>
+
+    }
+}
 
 <style>
     body {
@@ -69,6 +80,7 @@
 @code {
     private string coinClass = "";
     private ViewModelCoinFlip Model = new ViewModelCoinFlip();
+    private FinishGame finishGame = new FinishGame(); // Move the declaration here
 
     [Parameter]
     public string gameId { get; set; }
@@ -83,15 +95,12 @@
         {
             coinClass = "heads";
             heads = true;
-
         }
         else
         {
             coinClass = "tails";
             heads = false;
         }
-        FinishGame finishGame = new FinishGame();
-
 
         if (Model.game.Heads == heads)
         {
@@ -107,11 +116,12 @@
         finishGame.joinperson = Model.opponent;
         var response = await Http.PostAsJsonAsync($"coinflip/{gameId}", finishGame);
 
-
         // Notify Blazor to refresh the UI
         StateHasChanged();
     }
-    private ViewModelProfile vm; 
+
+    private ViewModelProfile vm;
+
     protected override async Task OnInitializedAsync()
     {
         var response1 = await Http.GetAsync("GetUser");
