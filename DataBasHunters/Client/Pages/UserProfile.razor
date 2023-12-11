@@ -4,16 +4,18 @@
 @inject HttpClient Http
 
 <div class="container">
-    <h1>User Profile</h1>
-
     @if (vm != null)
     {
-        <div>
-            <h3>Welcome, @vm.user.Username!</h3>
-            <p>User ID: @vm.user.Id</p>
-            <p>Funds: @vm.user.Funds</p>
-            <p>Profile Picture: <img src="@vm.user.Profilepicture" alt="Profile Picture" /></p>
-        </div>
+            <div class="ProfileGrid">
+                <div>
+                    <p>Profile Picture: <img src="@vm.user.Profilepicture" alt="Profile Picture" /></p>
+                </div>
+                <div>
+                    <h1>@vm.user.Id - @vm.user.Username</h1>
+                    <h1>@vm.user.Funds kr</h1>
+                </div>
+            </div>
+       
         <div>
             <h3>Transaction History</h3>
             @if (vm.history != null && vm.history.Any())
@@ -49,6 +51,14 @@
         <p>Please log in to view your profile.</p>
     }
 </div>
+
+<style>
+    .ProfileGrid {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        align-items: center;
+    }
+</style>
 
 @code {
     private ViewModelProfile vm;
