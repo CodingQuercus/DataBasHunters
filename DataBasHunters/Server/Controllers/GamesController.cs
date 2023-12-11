@@ -121,9 +121,19 @@ namespace DataBasHunters.Server.Controllers
             };
 
             return Ok(vm);
-        }  
+        }
 
+        [HttpPost("coinflip/{gameId}")]
+        public IActionResult AcutalCoinFlip([FromBody] FinishGame finish)
+        {
+            GameMethods gm = new GameMethods();
+            string error1 = "";
+            string error2 = "";
+            gm.JoinGame(finish.game, finish.joinperson, out error1);
+            gm.FinishGame(finish.game, finish.winner.Id, finish.loser.Id, out error2);
 
+            return Ok();
+        }
 
     }
 }

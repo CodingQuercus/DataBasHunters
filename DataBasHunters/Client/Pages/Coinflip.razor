@@ -4,7 +4,7 @@
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
 
-<PageTitle>Coinflip</PageTitle>
+<PageTitle>Coinflip</PageTitle> 
 
 <h1>Coinflip Game</h1>
 <p>Opponent: @Model.opponent?.Username</p>
@@ -73,22 +73,40 @@
     [Parameter]
     public string gameId { get; set; }
 
-    private void FlipCoinHandler()
+    private async Task FlipCoinHandler()
     {
         var flipResult = new Random().NextDouble();
 
-        int heads;
+        bool heads;
 
         if (flipResult <= 0.5)
         {
             coinClass = "heads";
-            heads = 1;
+            heads = true;
+
         }
         else
         {
             coinClass = "tails";
-            heads = 0;
+            heads = false;
         }
+        FinishGame finishGame = new FinishGame();
+
+
+        if (Model.game.Heads == heads)
+        {
+            finishGame.winner = Model.creator;
+            finishGame.loser = Model.opponent;
+        }
+        else
+        {
+            finishGame.loser = Model.opponent;
+            finishGame.winner = Model.creator;
+        }
+        finishGame.game = Model.game;
+        finishGame.joinperson = Model.opponent;
+        var response = await Http.PostAsJsonAsync($"coinflip/{gameId}", finishGame);
+
 
         // Notify Blazor to refresh the UI
         StateHasChanged();

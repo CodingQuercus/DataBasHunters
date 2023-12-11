@@ -29,7 +29,7 @@ namespace DataBasHunters.Shared
 
                 while (reader.Read())
                 {
-                    Cointoss game= new Cointoss
+                    Cointoss game = new Cointoss
                     {
                         Id = Convert.ToInt16(reader["Id"]),
                         Date = Convert.ToDateTime(reader["Date"]),
@@ -245,20 +245,52 @@ namespace DataBasHunters.Shared
                 dbConnection.Close();
             }
         }
+        public int JoinGame(Cointoss ct, User joinperson, out string errormsg)
+        {
+            SqlConnection dbConnection = new SqlConnection();
+            dbConnection.ConnectionString = @"Server=tcp:basehunters.database.windows.net,1433;Initial Catalog=databasprojekt;Persist Security Info=False;User ID=hunters;Password=COOLkille15;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
 
+            string sqlstring = "UPDATE [USER] SET [FUNDS] = [FUNDS] - (@Sum) WHERE [Id] = @joinperson";
+
+            SqlCommand dbCommand = new SqlCommand(sqlstring, dbConnection);
+
+            dbCommand.Parameters.Add("@joinperson", SqlDbType.Int).Value = joinperson.Id;
+            dbCommand.Parameters.Add("@Sum", SqlDbType.Int).Value = ct.Sum;
+
+
+
+
+            try
+            {
+                dbConnection.Open();
+                dbCommand.ExecuteScalar();
+                errormsg = "";
+
+                return 1;
+            }
+            catch (Exception e)
+            {
+                errormsg = $"Error: {e.Message}\nStackTrace: {e.StackTrace}";
+                return 0;
+            }
+            finally
+            {
+                dbConnection.Close();
+            }
+        }
         public int FinishGame(Cointoss ct, int winnerId, int loserId, out string errormsg)
         {
             SqlConnection dbConnection = new SqlConnection();
             dbConnection.ConnectionString = @"Server=tcp:basehunters.database.windows.net,1433;Initial Catalog=databasprojekt;Persist Security Info=False;User ID=hunters;Password=COOLkille15;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
 
-            string sqlstring = "EXECUTE [dbo].[WinnerWinner] @WinnerId, @LoserId, @Heads, @CreationDate";
+            string sqlstring = "EXECUTE [dbo].[WinnerWinner] @WinnerId, @LoserId, @GameId, @Date";
 
             SqlCommand dbCommand = new SqlCommand(sqlstring, dbConnection);
 
             dbCommand.Parameters.Add("@WinnerId", SqlDbType.Int).Value = winnerId;
-            dbCommand.Parameters.Add("@CreationDate", SqlDbType.DateTime).Value = DateTime.Now;
-            dbCommand.Parameters.Add("@Sum", SqlDbType.Int).Value = ct.Sum;
-            dbCommand.Parameters.Add("@Heads", SqlDbType.Int).Value = ct.Heads;
+            dbCommand.Parameters.Add("@LoserId", SqlDbType.Int).Value = loserId;
+            dbCommand.Parameters.Add("@GameId", SqlDbType.Int).Value = ct.Id;
+            dbCommand.Parameters.Add("@Date", SqlDbType.DateTime).Value = DateTime.Now;
 
 
 
