@@ -15,8 +15,19 @@
     private Cointoss NewCointoss = new Cointoss();
     [Parameter]
     public string gameId { get; set; }
+    private ViewModelProfile vm;
     private async Task DeleteGameHandler()
     {
+        var response1 = await Http.GetAsync("GetUser");
+
+        if (response1.IsSuccessStatusCode)
+        {
+            vm = await response1.Content.ReadFromJsonAsync<ViewModelProfile>();
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/Login");
+        }
         var response = await Http.PostAsync($"DeleteGame/{gameId}", null);
         if (response.IsSuccessStatusCode)
         {

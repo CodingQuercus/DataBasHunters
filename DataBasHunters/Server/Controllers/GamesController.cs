@@ -59,6 +59,7 @@ namespace DataBasHunters.Server.Controllers
 
             GameMethods gm = new GameMethods();
             string error = "";
+
             int userId = (int)HttpContext.Session.GetInt32("UserId");
             var games = gm.GetMyGames(userId, out error);
 

@@ -56,9 +56,19 @@ else
 
 @code {
     private List<Cointoss> games;
-
+    private ViewModelProfile vm;
     protected override async Task OnInitializedAsync()
     {
+        var response1 = await Http.GetAsync("GetUser");
+
+        if (response1.IsSuccessStatusCode)
+        {
+            vm = await response1.Content.ReadFromJsonAsync<ViewModelProfile>();
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/Login");
+        }
         var response = await Http.GetFromJsonAsync<List<Cointoss>>("GetGames");
 
         if (response != null)

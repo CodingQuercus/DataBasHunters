@@ -2,6 +2,7 @@
 @using DataBasHunters.Shared
 @inject HttpClient Http
 @using Microsoft.Data.SqlClient;
+@inject NavigationManager NavigationManager
 
 <PageTitle>Users</PageTitle>
 
@@ -40,9 +41,19 @@ else
 
 @code {
     private List<User> users;
-
+    private ViewModelProfile vm;
     protected override async Task OnInitializedAsync()
     {
+        var response1 = await Http.GetAsync("GetUser");
+
+        if (response1.IsSuccessStatusCode)
+        {
+            vm = await response1.Content.ReadFromJsonAsync<ViewModelProfile>();
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/Login");
+        }
         var response = await Http.GetFromJsonAsync<List<User>>("GetUsers");
 
         if (response != null)
