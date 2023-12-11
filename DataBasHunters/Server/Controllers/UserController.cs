@@ -33,17 +33,23 @@ namespace DataBasHunters.Server.Controllers
             UserMethods um = new UserMethods();
             TransactionMethods tm = new TransactionMethods();
             string error = "";
-
+            
             // Hämta användar-ID från sessionsvariabeln
-            int userId = (int)HttpContext.Session.GetInt32("UserId");
+            if (HttpContext.Session.GetInt32("UserId").HasValue) {
 
-            ViewModelProfile vm = new ViewModelProfile()
-            {
-                user = um.GetUser(userId, out error),
-                history = tm.GetTransactions(userId, out error)
-            };
+             int userId = (int)HttpContext.Session.GetInt32("UserId");
 
-            return Ok(vm);
+                ViewModelProfile vm = new ViewModelProfile()
+                {
+                    user = um.GetUser(userId, out error),
+                    history = tm.GetTransactions(userId, out error)
+                };
+
+                return Ok(vm);
+            }
+
+            return BadRequest();
+            
         }
 
 
