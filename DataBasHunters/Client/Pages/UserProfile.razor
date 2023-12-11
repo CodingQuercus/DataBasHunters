@@ -6,13 +6,42 @@
 <div class="container">
     <h1>User Profile</h1>
 
-    @if (user != null)
+    @if (vm != null)
     {
         <div>
-            <h3>Welcome, @user.Username!</h3>
-            <p>User ID: @user.Id</p>
-            <p>Funds: @user.Funds</p>
-            <p>Profile Picture: <img src="@user.Profilepicture" alt="Profile Picture" /></p>
+            <h3>Welcome, @vm.user.Username!</h3>
+            <p>User ID: @vm.user.Id</p>
+            <p>Funds: @vm.user.Funds</p>
+            <p>Profile Picture: <img src="@vm.user.Profilepicture" alt="Profile Picture" /></p>
+        </div>
+        <div>
+            <h3>Transaction History</h3>
+            @if (vm.history != null && vm.history.Any())
+            {
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Transaction ID</th>
+                            <th>Sum</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var transaction in vm.history)
+                        {
+                            <tr>
+                                <td>@transaction.Id</td>
+                                <td>@transaction.Sum</td>
+                                <td>@transaction.Date</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <p>No transaction history available.</p>
+            }
         </div>
     }
     else
@@ -22,7 +51,7 @@
 </div>
 
 @code {
-    private User user;
+    private ViewModelProfile vm;
 
     protected override async Task OnInitializedAsync()
     {
@@ -35,7 +64,7 @@
 
         if (response.IsSuccessStatusCode)
         {
-            user = await response.Content.ReadFromJsonAsync<User>();
+            vm = await response.Content.ReadFromJsonAsync<ViewModelProfile>();
         }
     }
 }

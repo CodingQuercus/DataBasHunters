@@ -31,36 +31,19 @@ namespace DataBasHunters.Server.Controllers
         public IActionResult UserProfile()
         {
             UserMethods um = new UserMethods();
+            TransactionMethods tm = new TransactionMethods();
             string error = "";
 
-            var users = um.GetUsers(out error);
-
-            if (!string.IsNullOrEmpty(error))
-            {
-                return BadRequest(new { Error = error });
-            }
-
             // Hämta användar-ID från sessionsvariabeln
-            int? userId = HttpContext.Session.GetInt32("UserId");
+            int userId = (int)HttpContext.Session.GetInt32("UserId");
 
-            if (userId.HasValue)
+            ViewModelProfile vm = new ViewModelProfile()
             {
-                // Hitta användaren med det angivna ID:et
-                var user = users.FirstOrDefault(u => u.Id == userId.Value);
+                user = um.GetUser(userId, out error),
+                history = tm.GetTransactions(userId, out error)
+            };
 
-                if (user != null)
-                {
-                    return Ok(user);
-                }
-                else
-                {
-                    return NotFound(new { Error = "Användare med det angivna ID:et hittades inte." });
-                }
-            }
-            else
-            {
-                return BadRequest(new { Error = "Sessionsvariabeln 'UserId' saknas eller är ogiltig." });
-            }
+            return Ok(vm);
         }
 
 
