@@ -49,6 +49,8 @@
             ValidationMessage = ""; // Clear the validation message if the value is valid
         }
 
+
+
         var response1 = await Http.GetAsync("GetUser");
 
         if (response1.IsSuccessStatusCode)
@@ -58,6 +60,12 @@
         else
         {
             NavigationManager.NavigateTo("/Login");
+        }
+
+        if (vm != null && vm.user.Funds - NewCointoss.Sum < 1)
+        {
+            ValidationMessage = "Insufficient funds";
+            return;
         }
 
         var response = await Http.PostAsJsonAsync("InsertGame", NewCointoss);

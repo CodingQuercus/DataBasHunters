@@ -15,6 +15,7 @@
     <div class="side-a"></div>
     <div class="side-b"></div>
 </div>
+<span>@ValidationMessage</span>
 <h2>Click on coin to flip</h2>
 
 <!-- Display winner section -->
@@ -80,6 +81,7 @@
 @code {
     private string coinClass = "";
     private ViewModelCoinFlip Model = new ViewModelCoinFlip();
+    private string ValidationMessage;
     private FinishGame finishGame = new FinishGame(); // Move the declaration here
 
     [Parameter]
@@ -90,6 +92,13 @@
         var flipResult = new Random().NextDouble();
 
         bool heads;
+
+        if (vm != null && vm.user.Funds - Model.game.Sum < 1)
+        {
+            ValidationMessage = "Insufficient funds";
+            return;
+        }
+
 
         if (flipResult <= 0.5)
         {
