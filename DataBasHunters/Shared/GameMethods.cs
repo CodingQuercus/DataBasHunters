@@ -208,7 +208,7 @@ namespace DataBasHunters.Shared
         {
             SqlConnection dbConnection = new SqlConnection();
             dbConnection.ConnectionString = @"Server=tcp:basehunters.database.windows.net,1433;Initial Catalog=databasprojekt;Persist Security Info=False;User ID=hunters;Password=COOLkille15;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
-            string sqlstring = "SELECT Id, Date, Sum FROM [Cointoss] WHERE Id = @Id";
+            string sqlstring = "SELECT Id, Date, Sum, Heads FROM [Cointoss] WHERE Id = @Id";
             SqlCommand dbCommand = new SqlCommand(sqlstring, dbConnection);
 
             dbCommand.Parameters.Add("@Id", SqlDbType.Int).Value = id;
@@ -225,6 +225,7 @@ namespace DataBasHunters.Shared
                     game.Id = Convert.ToInt32(reader["Id"]);
                     game.Date = Convert.ToDateTime(reader["Date"]);
                     game.Sum = Convert.ToInt32(reader["Sum"]);
+                    game.Heads = Convert.ToBoolean(reader["Heads"]);
 
                     errorMsg = "";
                     return game;
