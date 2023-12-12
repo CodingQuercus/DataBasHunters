@@ -64,7 +64,7 @@
             NavigationManager.NavigateTo("/Login");
         }
 
-        if (vm != null && vm.user.Funds - NewCointoss.Sum < 1)
+        if (vm != null && vm.user.Funds - NewCointoss.Sum < 0)
         {
             ValidationMessage = "Insufficient funds";
             return;
