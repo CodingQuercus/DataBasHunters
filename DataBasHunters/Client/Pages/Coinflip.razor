@@ -7,8 +7,8 @@
 <PageTitle>Coinflip</PageTitle>
 
 <h1>Coinflip Game</h1>
-<p>Opponent: @Model.opponent?.Username</p>
-<p>Creator: @Model.creator?.Username</p>
+<p>Opponent: @Model.opponent?.Username Plays: @opponentBet</p>
+<p>Creator: @Model.creator?.Username Plays: @creatorBet</p>
 <p>Game ID: @Model.game?.Id</p>
 
 <div id="coin" class="@coinClass" @onclick="FlipCoinHandler">
@@ -83,6 +83,8 @@
     private ViewModelCoinFlip Model = new ViewModelCoinFlip();
     private string ValidationMessage;
     private FinishGame finishGame = new FinishGame(); // Move the declaration here
+    private string creatorBet = "";
+    private string opponentBet = "";
 
     [Parameter]
     public string gameId { get; set; }
@@ -144,8 +146,20 @@
             NavigationManager.NavigateTo("/Login");
         }
 
+
         var response = await Http.GetFromJsonAsync<ViewModelCoinFlip>($"coinflip/{gameId}");
 
         Model = response;
+
+        if (Model != null && Model.game.Heads)
+        {
+            creatorBet = "Heads (Red)";
+            opponentBet = "Tails (Black)";
+        }
+        else
+        {
+            opponentBet = "Heads (Red)";
+            creatorBet = "Tails (Black)";
+        }
     }
 }
