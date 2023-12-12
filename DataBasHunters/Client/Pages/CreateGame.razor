@@ -36,12 +36,14 @@
     private ViewModelProfile vm;
     private string ValidationMessage;
 
+    //On initialize check cookie
+
     private async Task CreateGameHandler()
     {
         // Validate the bet value
         if (NewCointoss.Sum < 1 || NewCointoss.Sum > 10000)
         {
-            ValidationMessage = "Bet value must be between 1 and 10,000.";
+            ValidationMessage = "Bet value must be between 0 and 10,000.";
             return;
         }
         else
@@ -49,7 +51,7 @@
             ValidationMessage = ""; // Clear the validation message if the value is valid
         }
 
-
+        //make sure you have sufficient funds
 
         var response1 = await Http.GetAsync("GetUser");
 
