@@ -1,0 +1,77 @@
+﻿@page "/bomba"
+
+@using DataBasHunters.Shared
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+@inject IJSRuntime JSRuntime
+    <canvas id="myChart"></canvas>
+
+    @code {
+        private ElementReference chartCanvas;
+        private object data; // Variable to store chart data
+        private object options; // Variable to store chart options
+
+        protected override async Task OnInitializedAsync()
+        {
+            // Initialize chart data
+            data = new
+            {
+                labels = new[] { "January", "February", "March", "April", "May", "June", "July" },
+                datasets = new[]
+                {
+                new
+                {
+                    label = "My First Dataset",
+                    data = new[] { 65, 59, 80, 81, 56, 55, 40 },
+                    backgroundColor = new[]
+                {
+                        "rgba(255, 99, 132, 0.2)",
+                        "rgba(54, 162, 235, 0.2)",
+                        "rgba(255, 206, 86, 0.2)",
+                        "rgba(75, 192, 192, 0.2)",
+                        "rgba(153, 102, 255, 0.2)",
+                        "rgba(255, 159, 64, 0.2)",
+                        "rgba(255, 99, 132, 0.2)"
+                    },
+                    borderColor = new[]
+                {
+                        "rgb(255, 99, 132)",
+                        "rgb(54, 162, 235)",
+                        "rgb(255, 206, 86)",
+                        "rgb(75, 192, 192)",
+                        "rgb(153, 102, 255)",
+                        "rgb(255, 159, 64)",
+                        "rgb(255, 99, 132)"
+                    },
+                    borderWidth = 1
+                }
+            }
+            };
+
+            // Initialize chart options
+            options = new
+            {
+                scales = new
+                {
+                    yAxes = new[]
+                    {
+                    new { ticks = new { beginAtZero = true } }
+                }
+                }
+            };
+        }
+
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            if (firstRender)
+            {
+                await JSRuntime.InvokeVoidAsync("createChart",
+                    "myChart",
+                    "bar", // chart type
+                    data,  // chart data
+                    options // chart options
+                );
+            }
+        }
+    }
