@@ -12,9 +12,9 @@
             <div>
                 <p><img src="@vm.user.Profilepicture" alt="Profile Picture" /></p>
 
-                <form method="post" enctype="multipart/form-data">
+                <form method="post" enctype="multipart/form-data" @onsubmit="UploadProfilePicture">
                     <div class="form-group" style="display: flex; align-items: center;">
-                        <input type="file" name="file" class="form-control" style="flex: 1;" required />
+                        <input type="file" name="file" @bind="vm.user.Profilepicture" class="form-control" style="flex: 1;" required/>
                         <button type="submit" class="btn btn-primary" style="margin-left: 2%;">Ladda upp</button>
                     </div>
                 </form>
@@ -87,14 +87,11 @@
 
 @code {
     private ViewModelProfile vm;
-    private ElementReference fileInput;
-
     private object data; // Variable to store chart data
     private object options; // Variable to store chart options
 
     private List<int> transactions = new List<int>();
     private List<DateTime> ids = new List<DateTime>();
-
 
     protected override async Task OnInitializedAsync()
     {
@@ -122,7 +119,7 @@
 
         // Initialize chart data
         data = new
-        {   
+        {
             labels = ids,
             datasets = new[]
         {
@@ -163,8 +160,11 @@
             );
         }
     }
-    private void ChangeProfilePicture()
-    {
 
+    protected async Task UploadProfilePicture() {
+
+        var response = await Http.PostAsJsonAsync("UpdateProfileImage",vm.user);
     }
+
+
 }
