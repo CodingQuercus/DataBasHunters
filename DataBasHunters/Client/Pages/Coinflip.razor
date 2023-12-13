@@ -85,12 +85,17 @@
     private FinishGame finishGame = new FinishGame(); // Move the declaration here
     private string creatorBet = "";
     private string opponentBet = "";
+    private bool played = false;
 
     [Parameter]
     public string gameId { get; set; }
 
     private async Task FlipCoinHandler()
     {
+        if (played) {
+            ValidationMessage = "The game has already been played";
+            return;
+        }
         var flipResult = new Random().NextDouble();
 
         bool heads;
@@ -100,12 +105,6 @@
             ValidationMessage = "Insufficient funds";
             return;
         }
-
-        //if (Model.game.Active==0) {
-        //    ValidationMessage = "Game is inactive";
-        //    return;
-        //}
-
 
         if (flipResult <= 0.5)
         {
@@ -117,7 +116,7 @@
             coinClass = "tails";
             heads = false;
         }
-
+        played = true;
         if (Model.game.Heads == heads)
         {
             finishGame.winner = Model.creator;
