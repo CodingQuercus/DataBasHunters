@@ -220,7 +220,7 @@ namespace DataBasHunters.Shared
         {
             SqlConnection dbConnection = new SqlConnection();
             dbConnection.ConnectionString = @"Server=tcp:basehunters.database.windows.net,1433;Initial Catalog=databasprojekt;Persist Security Info=False;User ID=hunters;Password=COOLkille15;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
-            string sqlstring = "UPDATE [dbo].[User] SET [Funds] = @funds WHERE [Id] = @id";
+            string sqlstring = "UPDATE [dbo].[User] SET [Funds] = (Funds + @funds) WHERE [Id] = @id";
 
             SqlCommand dbCommand = new SqlCommand(sqlstring, dbConnection);
 
