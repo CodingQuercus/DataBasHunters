@@ -9,7 +9,14 @@
     {
             <div class="ProfileGrid">
                 <div>
-                    <p>Profile Picture: <img src="@vm.user.Profilepicture" alt="Profile Picture" /></p>
+                    <p><img src="@vm.user.Profilepicture" alt="Profile Picture" /></p>
+
+                    <form method="post" enctype="multipart/form-data">
+                        <div class="form-group" style="display: flex; align-items: center;">
+                            <input type="file" name="file" class="form-control" style="flex: 1;" required />
+                            <button type="submit" class="btn btn-primary" style="margin-left: 2%;">Ladda upp</button>
+                        </div>
+                    </form>
                 </div>
                 <div>
                     <h1>@vm.user.Id - @vm.user.Username</h1>
@@ -56,14 +63,23 @@
 <style>
     .ProfileGrid {
         display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
+        grid-template-columns: 60% 40%;
         align-items: center;
+        align-content: center;
+        text-align: center;
         margin: 10% 2% 10% 2%;
+    }
+    .form-group {
+        align-content: center;
+        align-items: center;
+        margin-top: 10px;
+        width: 80%
     }
 </style>
 
 @code {
     private ViewModelProfile vm;
+    private ElementReference fileInput;
 
     protected override async Task OnInitializedAsync()
     {
@@ -82,5 +98,9 @@
         {
             NavigationManager.NavigateTo("/Login");
         }
+    }
+    private void ChangeProfilePicture()
+    {
+        
     }
 }
