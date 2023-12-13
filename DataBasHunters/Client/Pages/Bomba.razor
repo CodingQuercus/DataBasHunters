@@ -9,17 +9,17 @@
 
     @code {
         private ElementReference chartCanvas;
-        private object data; // Variable to store chart data
-        private object options; // Variable to store chart options
+                private object data; // Variable to store chart data
+                private object options; // Variable to store chart options
 
-        protected override async Task OnInitializedAsync()
-        {
-            // Initialize chart data
-            data = new
+            protected override async Task OnInitializedAsync()
             {
-                labels = new[] { "January", "February", "March", "April", "May", "June", "July" },
-                datasets = new[]
+                // Initialize chart data
+                data = new
                 {
+                    labels = new[] { "January", "February", "March", "April", "May", "June", "July" },
+                    datasets = new[]
+                    {
                 new
                 {
                     label = "My First Dataset",
@@ -47,31 +47,31 @@
                     borderWidth = 1
                 }
             }
-            };
+                };
 
-            // Initialize chart options
-            options = new
-            {
-                scales = new
+                // Initialize chart options
+                options = new
                 {
-                    yAxes = new[]
+                    scales = new
                     {
+                        yAxes = new[]
+                        {
                     new { ticks = new { beginAtZero = true } }
                 }
-                }
-            };
-        }
+                    }
+                };
+            }
 
-        protected override async Task OnAfterRenderAsync(bool firstRender)
-        {
-            if (firstRender)
+            protected override async Task OnAfterRenderAsync(bool firstRender)
             {
-                await JSRuntime.InvokeVoidAsync("createChart",
-                    "myChart",
-                    "bar", // chart type
-                    data,  // chart data
-                    options // chart options
-                );
+                if (firstRender)
+                {
+                    await JSRuntime.InvokeVoidAsync("createChart",
+                        "myChart",
+                        "bar", // chart type
+                        data,  // chart data
+                        options // chart options
+                    );
+                }
             }
         }
-    }

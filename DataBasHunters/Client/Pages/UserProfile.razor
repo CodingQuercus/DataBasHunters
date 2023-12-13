@@ -3,31 +3,34 @@
 @using DataBasHunters.Shared
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
+@inject IJSRuntime JSRuntime
 
 <div class="container">
     @if (vm != null)
     {
-            <div class="ProfileGrid">
-                <div>
-                    <p><img src="@vm.user.Profilepicture" alt="Profile Picture" /></p>
+        <div class="ProfileGrid">
+            <div>
+                <p><img src="@vm.user.Profilepicture" alt="Profile Picture" /></p>
 
-                    <form method="post" enctype="multipart/form-data">
-                        <div class="form-group" style="display: flex; align-items: center;">
-                            <input type="file" name="file" class="form-control" style="flex: 1;" required />
-                            <button type="submit" class="btn btn-primary" style="margin-left: 2%;">Ladda upp</button>
-                        </div>
-                    </form>
-                </div>
-                <div>
-                    <h1>@vm.user.Id - @vm.user.Username</h1>
-                    <h1>@vm.user.Funds kr</h1>
-                </div>
+                <form method="post" enctype="multipart/form-data">
+                    <div class="form-group" style="display: flex; align-items: center;">
+                        <input type="file" name="file" class="form-control" style="flex: 1;" required />
+                        <button type="submit" class="btn btn-primary" style="margin-left: 2%;">Ladda upp</button>
+                    </div>
+                </form>
             </div>
-       
+            <div>
+                <h1>@vm.user.Id - @vm.user.Username</h1>
+                <h1>@vm.user.Funds kr</h1>
+            </div>
+        </div>
+
         <div>
             <h3>Transaction History</h3>
+
             @if (vm.history != null && vm.history.Any())
             {
+                <canvas id="myChart"></canvas>
                 <table class="table">
                     <thead>
                         <tr>
@@ -58,7 +61,11 @@
     {
         <p>Please log in to view your profile.</p>
     }
+   
+
 </div>
+
+
 
 <style>
     .ProfileGrid {
@@ -69,6 +76,7 @@
         text-align: center;
         margin: 10% 2% 10% 2%;
     }
+
     .form-group {
         align-content: center;
         align-items: center;
@@ -80,6 +88,13 @@
 @code {
     private ViewModelProfile vm;
     private ElementReference fileInput;
+
+    private object data; // Variable to store chart data
+    private object options; // Variable to store chart options
+
+    private List<int> transactions = new List<int>();
+    private List<DateTime> ids = new List<DateTime>();
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -98,9 +113,58 @@
         {
             NavigationManager.NavigateTo("/Login");
         }
+
+        foreach (var transaction in vm.history)
+        {
+            transactions.Add(transaction.Sum);
+            ids.Add(transaction.Date);
+        }
+
+        // Initialize chart data
+        data = new
+        {   
+            labels = ids,
+            datasets = new[]
+        {
+            new
+                {
+                    label = "Your history",
+                    data = transactions,
+                    backgroundColor = "rgba(255, 99, 132, 0.2)",
+                    borderColor = "rgb(255, 99, 132)",
+                    borderWidth = 1,
+                }
+            }
+        };
+
+        // Initialize chart options
+        options = new
+        {
+            scales = new
+            {
+                yAxes = new[]
+                {
+                    new { ticks = new { beginAtZero = true } }
+                }
+            }
+        };
+        StateHasChanged();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender)
+        {
+            await JSRuntime.InvokeVoidAsync("createChart",
+                "myChart",
+                "line", // chart type
+                data,  // chart data
+                options // chart options
+            );
+        }
     }
     private void ChangeProfilePicture()
     {
-        
+
     }
 }
