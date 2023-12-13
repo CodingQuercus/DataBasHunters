@@ -369,6 +369,36 @@ namespace DataBasHunters.Shared
                 dbConnection.Close();
             }
         }
+
+
+        public int UpdateUserImage(int id, string url, out string err)
+        {
+            SqlConnection dbConnection = new SqlConnection();
+            dbConnection.ConnectionString = @"Server=tcp:basehunters.database.windows.net,1433;Initial Catalog=databasprojekt;Persist Security Info=False;User ID=hunters;Password=COOLkille15;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
+            string sqlstring = "UPDATE[dbo].[User] SET [ProfilePicture] = @url WHERE [Id] = @Id";
+            SqlCommand dbCommand = new SqlCommand(sqlstring, dbConnection);
+
+
+            dbCommand.Parameters.Add("@Id", SqlDbType.Int).Value = id;
+            dbCommand.Parameters.Add("@Profilepicture", SqlDbType.NVarChar, 255).Value = url;
+
+            try
+            {
+                dbConnection.Open();
+                int i = dbCommand.ExecuteNonQuery();
+                if (i == 1) { err = ""; }
+                else { err = "Failed to create user, try again"; };
+                return i;
+            } catch (Exception e)
+            {
+                err = e.Message;
+                return 0;
+            }
+            finally
+            {
+                dbConnection.Close();
+            }
+        }
     }
 
 }

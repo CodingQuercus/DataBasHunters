@@ -104,5 +104,23 @@ namespace DataBasHunters.Server.Controllers
         }
 
 
+        [HttpPost("UpdateProfileImage")]
+        public IActionResult UpdateImage([FromBody] User user) {
+            if(ModelState.IsValid) {
+                string error = "";
+                UserMethods um = new UserMethods();
+                var success = um.UpdateUserImage(user.Id, user.Profilepicture, out error);
+
+                return Ok();
+
+            } else
+            {
+                return BadRequest();
+            }
+
+        }
+
+
+
     }
 }
