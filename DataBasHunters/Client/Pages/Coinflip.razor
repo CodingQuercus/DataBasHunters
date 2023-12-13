@@ -92,10 +92,16 @@
 
     private async Task FlipCoinHandler()
     {
+        if (Model.creator.Id == Model.opponent.Id)
+        {
+            ValidationMessage = "You can´t play against yourself";
+            return;
+        }
         if (played) {
             ValidationMessage = "The game has already been played";
             return;
         }
+
         var flipResult = new Random().NextDouble();
 
         bool heads;
@@ -155,15 +161,24 @@
 
         Model = response;
 
-        if (Model != null && Model.game.Heads)
+        if (Model != null)
         {
-            creatorBet = "Heads (Red)";
-            opponentBet = "Tails (Black)";
+            if (Model.creator.Id == Model.opponent.Id)
+            {
+                ValidationMessage = "You can´t play against yourself";
+            }
+
+            if (Model.game.Heads)
+            {
+                creatorBet = "Heads (Red)";
+                opponentBet = "Tails (Black)";
+            }
+            else
+            {
+                opponentBet = "Heads (Red)";
+                creatorBet = "Tails (Black)";
+            }
         }
-        else
-        {
-            opponentBet = "Heads (Red)";
-            creatorBet = "Tails (Black)";
-        }
+
     }
     }

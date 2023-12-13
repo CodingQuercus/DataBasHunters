@@ -3,27 +3,35 @@
 @inject NavigationManager NavigationManager
 @using DataBasHunters.Shared;
 
+
+
 <h1>Create New Game</h1>
 
 <form @onsubmit="CreateGameHandler">
     <div class="form-group">
-        <label for="Sum">Enter your bet</label>
-        <input type="number" id="Sum" @bind="NewCointoss.Sum" />
-        <span>@ValidationMessage</span>
+        <label for="Sum">Enter your bet:</label>
+        <input type="number" id="Sum" @bind="NewCointoss.Sum" aria-describedby="sumDescription" />
+        <div role="alert" aria-live="assertive">
+            <span id="sumDescription">@ValidationMessage</span>
+        </div>
     </div>
 
     <br />
 
     <div class="form-group">
-        <label>Heads or tails?</label>
-        <div>
-            <label>
-                <input type="radio" name="Heads" checked="@NewCointoss.Heads" @onclick="() => NewCointoss.Heads = true" /> Heads
-            </label>
-            <label>
-                <input type="radio" name="Heads" checked="@(!NewCointoss.Heads)" @onclick="() => NewCointoss.Heads = false" /> Tails
-            </label>
-        </div>
+        <fieldset>
+            <legend>Heads or tails?</legend>
+            <div>
+                <label>
+                    <input type="radio" name="Heads" checked="@NewCointoss.Heads" @onclick="() => NewCointoss.Heads = true" />
+                    Heads
+                </label>
+                <label>
+                    <input type="radio" name="Heads" checked="@(!NewCointoss.Heads)" @onclick="() => NewCointoss.Heads = false" />
+                    Tails
+                </label>
+            </div>
+        </fieldset>
     </div>
 
     <br />
@@ -51,8 +59,7 @@
             ValidationMessage = ""; // Clear the validation message if the value is valid
         }
 
-        //make sure you have sufficient funds
-
+        // Make sure you have sufficient funds
         var response1 = await Http.GetAsync("GetUser");
 
         if (response1.IsSuccessStatusCode)
