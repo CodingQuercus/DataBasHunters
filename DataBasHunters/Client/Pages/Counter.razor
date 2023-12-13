@@ -1,4 +1,7 @@
-﻿@page "/counter"
+﻿@inject HttpClient Http
+
+@page "/counter"
+
 
 <PageTitle>Counter</PageTitle>
 
@@ -14,6 +17,11 @@
     private void IncrementCount()
     {
         currentCount++;
+
+    }
+    private async Task AddFunds()
+    {
+        var response = await Http.postAsync("AddFunds");
     }
 }
 

@@ -103,6 +103,24 @@ namespace DataBasHunters.Server.Controllers
             }
         }
 
+        [HttpPost("AddFundsToUser")]
+        public IActionResult AddFunds([FromBody] int funds)
+        {
+            if (ModelState.IsValid)
+            {
+                string error = "";
+                UserMethods um = new UserMethods();
+                var success = um.AddFunds((int)HttpContext.Session.GetInt32("UserId"), funds, out error);
+
+                return Ok();
+
+            }
+            else
+            {
+                return BadRequest();
+            }
+
+        }
 
         [HttpPost("UpdateProfileImage")]
         public IActionResult UpdateImage([FromBody] User user) {
