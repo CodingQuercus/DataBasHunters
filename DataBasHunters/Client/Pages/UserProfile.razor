@@ -26,7 +26,7 @@
         </div>
 
         <div>
-            <h3>Transaction History</h3>
+            <h3>Transaction History - total win/loss: @slut kr</h3>
 
             @if (vm.history != null && vm.history.Any())
             {
@@ -89,6 +89,7 @@
     private ViewModelProfile vm;
     private object data; // Variable to store chart data
     private object options; // Variable to store chart options
+    private int slut = 0;
 
     private List<int> transactions = new List<int>();
     private List<DateTime> ids = new List<DateTime>();
@@ -115,6 +116,7 @@
         {
             transactions.Add(transaction.Sum);
             ids.Add(transaction.Date);
+            slut = slut + transaction.Sum;
         }
 
         // Initialize chart data
