@@ -52,6 +52,18 @@ namespace DataBasHunters.Server.Controllers
             
         }
 
+        [HttpGet("GetUserId")]
+        public IActionResult GetUserId()
+        {
+            // Hämta användar-ID från sessionsvariabeln
+            if (HttpContext.Session.GetInt32("UserId").HasValue)
+            {
+                int userId = (int)HttpContext.Session.GetInt32("UserId");
+                return Ok(userId);
+            }
+
+            return Ok();
+        }
 
         [HttpPost("InsertUser")]
         public IActionResult InserUser([FromBody] User newUser)
