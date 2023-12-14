@@ -60,12 +60,19 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        var response = await Http.GetFromJsonAsync<List<Cointoss>>("GetMyGames");
+        var response = await Http.GetAsync("GetMyGames");
+        //await Http.GetFromJsonAsync<List<Cointoss>>("GetMyGames");
 
-        if (response != null)
+        if (response.IsSuccessStatusCode)
         {
-            games = response;
+            games = await response.Content.ReadFromJsonAsync<List<Cointoss>>();
         }
+        else
+        {
+            NavigationManager.NavigateTo("/Login");
+        }
+
+
     }
 
     private void DeleteGame(int gameId)

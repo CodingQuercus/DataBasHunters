@@ -69,6 +69,7 @@ else
         {
             NavigationManager.NavigateTo("/Login");
         }
+
         var response = await Http.GetFromJsonAsync<List<Cointoss>>("GetGames");
 
         if (response != null)

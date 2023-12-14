@@ -60,15 +60,21 @@ namespace DataBasHunters.Server.Controllers
             GameMethods gm = new GameMethods();
             string error = "";
 
-            int userId = (int)HttpContext.Session.GetInt32("UserId");
-            var games = gm.GetMyGames(userId, out error);
-
-            if (!string.IsNullOrEmpty(error))
+            if (HttpContext.Session.GetInt32("UserId").HasValue)
             {
-                return BadRequest(new { Error = error });
+
+                int userId = (int)HttpContext.Session.GetInt32("UserId");
+                var games = gm.GetMyGames(userId, out error);
+
+                if (!string.IsNullOrEmpty(error))
+                {
+                    return BadRequest(new { Error = error });
+                }
+
+                return Ok(games);
             }
 
-            return Ok(games);
+            return BadRequest();
         }
         [HttpPost("DeleteGame/{gameId}")]
         public IActionResult DeleteGame([FromRoute] int gameId)
