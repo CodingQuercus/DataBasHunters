@@ -23,6 +23,10 @@
             <div>
                 <h1>@vm.user.Id - @vm.user.Username</h1>
                 <h1>@vm.user.Funds kr</h1>
+                <br />
+                <button @onclick="IncrementCount">$$$$@currentCount$$$$</button>
+                <br />
+                <button class="btn btn-primary" @onclick="AddFunds">Add funds</button>
             </div>
         </div>
 
@@ -99,6 +103,17 @@
     private byte[] fileBytes;
     private string fileName;
 
+    private int currentCount = 0;
+    private void IncrementCount()
+    {
+        currentCount++;
+    }
+    private async Task AddFunds()
+    {
+        var response = await Http.PostAsJsonAsync("AddFundsToUser", currentCount);
+        currentCount = 0;
+        StateHasChanged();
+    }
 
     protected override async Task OnInitializedAsync()
     {
@@ -182,6 +197,10 @@
         }
     }
 
+
+
+
+
     private async Task UploadFile()
     {
         if (fileBytes != null)
@@ -189,7 +208,7 @@
             // Save the file to wwwroot/images and update the database
             // Generate a unique file name
             string uniqueFileName = $"{Guid.NewGuid()}_{fileName}";
-            string filePath = Path.Combine("wwwroot/images", uniqueFileName);
+            string filePath = Path.Combine("wwwroot/images/", uniqueFileName);
 
             // Save the file to the server
             await File.WriteAllBytesAsync(filePath, fileBytes);
@@ -201,7 +220,7 @@
 
             if (updateResponse.IsSuccessStatusCode)
             {
-                 StateHasChanged();
+                StateHasChanged();
             }
             else
             {
