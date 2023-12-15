@@ -14,7 +14,7 @@
 
                 <form method="post" enctype="multipart/form-data" @onsubmit="UploadProfilePicture">
                     <div class="form-group" style="display: flex; align-items: center;">
-                        <input type="file" name="file" @bind="vm.user.Profilepicture" class="form-control" style="flex: 1;" required/>
+                        <input type="file" accept="image/*" name="file" @bind="vm.user.imageFile" class="form-control" style="flex: 1;" required/>
                         <button type="submit" class="btn btn-primary" style="margin-left: 2%;">Ladda upp</button>
                     </div>
                 </form>
