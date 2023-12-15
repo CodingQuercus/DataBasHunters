@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using DataBasHunters.Shared;
+using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.Extensions.Hosting;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -135,31 +137,89 @@ namespace DataBasHunters.Server.Controllers
         }
 
         [HttpPost("UpdateProfileImage")]
-        public IActionResult UpdateImage([FromBody] User user) {
+        public async Task<IActionResult> UpdateImage([FromForm] byte[] imageFile, [FromForm] string fileName, [FromForm] int userId)
+        {
+            try
+            {
+                if (imageFile.Length == 0 || string.IsNullOrEmpty(fileName))
+                {
+                    return BadRequest("Invalid file data");
+                }
 
-            if (user.imageFile.FileName != null && user.imageFile.Length > 0)
+                if (imageFile.Length > 0 && !string.IsNullOrEmpty(fileName))
             {
                 var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images");
-                var uniqueFileName = Guid.NewGuid().ToString() + "_" + user.imageFile.FileName;
+                var uniqueFileName = Guid.NewGuid().ToString() + "_" + fileName;
                 var filePath = Path.Combine(uploadsFolder, uniqueFileName);
 
-                using (var fileStream = new FileStream(filePath, FileMode.Create))
-                {
-                    user.imageFile.CopyTo(fileStream);
-                }
+                await System.IO.File.WriteAllBytesAsync(filePath, imageFile);
 
                 string error = "";
                 UserMethods um = new UserMethods();
-                var success = um.UpdateUserImage(user.Id, filePath, out error);
-                return Ok();
+
+                // Use the userId to update the user's profile picture
+                var success = um.UpdateUserImage(userId, filePath, out error);
+
+                if (success == 1)
+                {
+                    return Ok();
+                }
+                else
+                {
+                    return BadRequest(error);
+                }
             }
-            return BadRequest();
-
-
-
+            return BadRequest("Invalid file data");
+            }
+            catch (Exception ex)
+            {
+                // Log the exception details
+                Console.WriteLine($"Error: {ex.Message}");
+                return StatusCode(500, "Internal Server Error");
+            }
         }
 
+        public class UserImageUpdateModel
+        {
+            public int Id { get; set; }
+            public string Url { get; set; }
+        }
 
+        [HttpPost]
+        public async Task<IActionResult> UpdateUserImage([FromBody] UserImageUpdateModel model)
+        {
+            // Call your data access layer method to update the image path
+            string error;
+
+            UserMethods um = new UserMethods();
+
+            int result = um.UpdateUserImage(model.Id, model.Url, out error);
+
+            if (result == 1)
+            {
+                return Ok();
+            }
+            else
+            {
+                return BadRequest(error);
+            }
+        }
+        public async Task<IActionResult> OnPostUploadAsync(IFormFile file)
+        {
+            if (file.Length > 0)
+            {
+                    private readonly IWebHostEnvironment —environment;
+
+        var filePath = Path.Combine(_environment.WebRootPath, "userimages", file.FileName);
+
+                using (var stream = System.IO.File.Create(filePath))
+                {
+                    await file.CopyToAsync(stream);
+                }
+            }
+
+            return Page();
+        }
 
     }
 }

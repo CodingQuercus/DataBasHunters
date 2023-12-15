@@ -13,10 +13,10 @@
             <div>
                 <p><img src="@vm.user.Profilepicture" alt="Profile Picture" /></p>
 
-                <form method="post" enctype="multipart/form-data" @onsubmit="UploadProfilePicture">
-                    <div class="form-group" style="display: flex; align-items: center;">
-                        <input type="file" name="file" @onchange="HandleFileUpload" class="form-control" style="flex: 1;" required/>
-                        <button type="submit" class="btn btn-primary" style="margin-left: 2%;">Ladda upp</button>
+                <form method="post" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <InputFile OnChange="@OnInputFileChange" class="form-control" />
+                        <button type="button" @onclick="UploadFile" class="btn btn-primary">Upload</button>
                     </div>
                 </form>
             </div>
@@ -95,6 +95,11 @@
     private List<int> transactions = new List<int>();
     private List<DateTime> ids = new List<DateTime>();
 
+    private IBrowserFile uploadedFile;
+    private byte[] fileBytes;
+    private string fileName;
+
+
     protected override async Task OnInitializedAsync()
     {
         // Retrieve information about the logged-in user
@@ -164,14 +169,46 @@
         }
     }
 
-    protected async Task UploadProfilePicture() {
-
-        var response = await Http.PostAsJsonAsync("UpdateProfileImage",vm.user);
-    }
-
-    private async Task HandleFileUpload(ChangeEventArgs e)
+    private async Task OnInputFileChange(InputFileChangeEventArgs e)
     {
-        var file = (e.Value as IFormFile);
-        vm.user.imageFile = file;
+        var file = e.File;
+        if (file != null)
+        {
+            using var stream = file.OpenReadStream();
+            fileBytes = new byte[file.Size];
+            await stream.ReadAsync(fileBytes, 0, (int)file.Size);
+            fileName = file.Name;
+            uploadedFile = file;
+        }
     }
+
+    private async Task UploadFile()
+    {
+        if (fileBytes != null)
+        {
+            // Save the file to wwwroot/images and update the database
+            // Generate a unique file name
+            string uniqueFileName = $"{Guid.NewGuid()}_{fileName}";
+            string filePath = Path.Combine("wwwroot/images", uniqueFileName);
+
+            // Save the file to the server
+            await File.WriteAllBytesAsync(filePath, fileBytes);
+
+            // Update the user profile in the database
+            string imageUrl = $"/images/{uniqueFileName}";
+            vm.user.Profilepicture = imageUrl; // Update the local model
+            var updateResponse = await Http.PostAsJsonAsync("UpdateUserImage", new { Id = vm.user.Id, Url = imageUrl });
+
+            if (updateResponse.IsSuccessStatusCode)
+            {
+                 StateHasChanged();
+            }
+            else
+            {
+                // Handle error
+            }
+        }
+    }
+
+
 }
