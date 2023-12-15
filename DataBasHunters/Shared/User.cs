@@ -1,4 +1,6 @@
-﻿namespace DataBasHunters.Shared;
+﻿using Microsoft.AspNetCore.Http;
+
+namespace DataBasHunters.Shared;
 
 public class User
 {
@@ -12,5 +14,6 @@ public class User
 
     public string? Profilepicture { get; set; }
 
+    public IFormFile imageFile { get; set; }
 }
 
