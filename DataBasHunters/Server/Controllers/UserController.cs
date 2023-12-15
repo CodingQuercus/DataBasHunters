@@ -204,22 +204,6 @@ namespace DataBasHunters.Server.Controllers
                 return BadRequest(error);
             }
         }
-        public async Task<IActionResult> OnPostUploadAsync(IFormFile file)
-        {
-            if (file.Length > 0)
-            {
-                    private readonly IWebHostEnvironment —environment;
-
-        var filePath = Path.Combine(_environment.WebRootPath, "userimages", file.FileName);
-
-                using (var stream = System.IO.File.Create(filePath))
-                {
-                    await file.CopyToAsync(stream);
-                }
-            }
-
-            return Page();
-        }
-
+      
     }
 }
