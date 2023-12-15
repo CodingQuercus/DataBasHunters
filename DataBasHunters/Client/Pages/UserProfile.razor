@@ -4,6 +4,7 @@
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
 @inject IJSRuntime JSRuntime
+@using Microsoft.AspNetCore.Http
 
 <div class="container">
     @if (vm != null)
@@ -14,7 +15,7 @@
 
                 <form method="post" enctype="multipart/form-data" @onsubmit="UploadProfilePicture">
                     <div class="form-group" style="display: flex; align-items: center;">
-                        <input type="file" accept="image/*" name="file" @bind="vm.user.imageFile" class="form-control" style="flex: 1;" required/>
+                        <input type="file" name="file" @onchange="HandleFileUpload" class="form-control" style="flex: 1;" required/>
                         <button type="submit" class="btn btn-primary" style="margin-left: 2%;">Ladda upp</button>
                     </div>
                 </form>
@@ -168,5 +169,9 @@
         var response = await Http.PostAsJsonAsync("UpdateProfileImage",vm.user);
     }
 
-
+    private async Task HandleFileUpload(ChangeEventArgs e)
+    {
+        var file = (e.Value as IFormFile);
+        vm.user.imageFile = file;
+    }
 }

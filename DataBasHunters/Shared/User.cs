@@ -14,6 +14,6 @@ public class User
 
     public string? Profilepicture { get; set; }
 
-    public IFormFile imageFile { get; set; }
+    public IFormFile? imageFile { get; set; }
 }
 

@@ -137,13 +137,17 @@ namespace DataBasHunters.Server.Controllers
         [HttpPost("UpdateProfileImage")]
         public IActionResult UpdateImage([FromBody] User user) {
 
-            if (user.Profilepicture != null && user.Profilepicture.Length > 0)
+            if (user.imageFile.FileName != null && user.imageFile.Length > 0)
             {
                 var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images");
-                var uniqueFileName = Guid.NewGuid().ToString() + "_" + user.Profilepicture;
+                var uniqueFileName = Guid.NewGuid().ToString() + "_" + user.imageFile.FileName;
                 var filePath = Path.Combine(uploadsFolder, uniqueFileName);
 
-                // Assuming you have a mechanism to update the user's profile picture URL in the database
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    user.imageFile.CopyTo(fileStream);
+                }
+
                 string error = "";
                 UserMethods um = new UserMethods();
                 var success = um.UpdateUserImage(user.Id, filePath, out error);
