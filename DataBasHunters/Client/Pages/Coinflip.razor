@@ -100,7 +100,7 @@
             ValidationMessage = "You can´t play against yourself";
             return;
         }
-        if (played) {
+        if (played || Model.game.Active == 1) {
             ValidationMessage = "The game has already been played";
             return;
         }
