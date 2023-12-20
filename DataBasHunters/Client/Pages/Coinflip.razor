@@ -92,6 +92,9 @@
 
     private async Task FlipCoinHandler()
     {
+        var response = await Http.GetFromJsonAsync<ViewModelCoinFlip>($"coinflip/{gameId}");
+
+        Model = response;
         if (Model.creator.Id == Model.opponent.Id)
         {
             ValidationMessage = "You can´t play against yourself";
