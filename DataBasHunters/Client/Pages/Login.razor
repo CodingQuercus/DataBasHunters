@@ -1,4 +1,5 @@
-﻿@page "/login"
+﻿@page "/"
+@page "/login"
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
 @using DataBasHunters.Shared;
@@ -29,14 +30,14 @@
     private User user = new User();
 
     private async Task LoginUserHandler()
-{
+    {
         var response = await Http.PostAsJsonAsync("LoginUser", user);
 
-        if(response.IsSuccessStatusCode)
-    {
-            NavigationManager.NavigateTo("/");
+        if (response.IsSuccessStatusCode)
+        {
+            NavigationManager.NavigateTo("/home");
+        }
     }
-}
 }
 
 <style>
