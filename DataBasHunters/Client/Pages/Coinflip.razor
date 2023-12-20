@@ -19,7 +19,7 @@
 <h2>Click on coin to flip</h2>
 
 <!-- Display winner section -->
-@if (Model != null && Model.game != null && Model.game.Active == 0)
+@if (played)
 {
     if (finishGame.winner != null)
     {
