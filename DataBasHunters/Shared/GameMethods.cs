@@ -226,7 +226,7 @@ namespace DataBasHunters.Shared
                     game.Date = Convert.ToDateTime(reader["Date"]);
                     game.Sum = Convert.ToInt32(reader["Sum"]);
                     game.Heads = Convert.ToBoolean(reader["Heads"]);
-                    game.Heads = Convert.ToBoolean(reader["Active"]);
+                    game.Active = Convert.ToInt16(reader["Active"]);
 
                     errorMsg = "";
                     return game;
